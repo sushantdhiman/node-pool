@@ -1,10 +1,10 @@
 "use strict";
 
-var tap = require("tap");
-var Pool = require("../..").Pool;
+const tap = require("tap");
+const Pool = require("../..").Pool;
 
-tap.test("fail for max < min", function(t) {
-  var factory = {
+tap.test("fail for max < min", t => {
+  const factory = {
     name: "test-config",
     create: () => {},
     destroy: () => {},
@@ -19,8 +19,8 @@ tap.test("fail for max < min", function(t) {
   t.end();
 });
 
-tap.test("fail without factory.create", function(t) {
-  var factory = {
+tap.test("fail without factory.create", t => {
+  const factory = {
     name: "test-config",
     destroy: () => {},
     validate: () => {},
@@ -34,8 +34,8 @@ tap.test("fail without factory.create", function(t) {
   t.end();
 });
 
-tap.test("fail without factory.destroy", function(t) {
-  var factory = {
+tap.test("fail without factory.destroy", t => {
+  const factory = {
     name: "test-config",
     create: () => {},
     validate: () => {},
@@ -49,8 +49,8 @@ tap.test("fail without factory.destroy", function(t) {
   t.end();
 });
 
-tap.test("fail without factory.validate", function(t) {
-  var factory = {
+tap.test("fail without factory.validate", t => {
+  const factory = {
     name: "test-config",
     create: () => {},
     destroy: () => {},

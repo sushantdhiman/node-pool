@@ -1,13 +1,13 @@
 "use strict";
 
-var tap = require("tap");
-var Pool = require("../..").Pool;
-var Promise = require("bluebird");
+const tap = require("tap");
+const Pool = require("../..").Pool;
+const Promise = require("bluebird");
 
-tap.test("async multiple calls", function(t) {
-  var createCount = 0;
+tap.test("async multiple calls", t => {
+  let createCount = 0;
 
-  var pool = new Pool({
+  const pool = new Pool({
     name: "test",
     create: function() {
       return Promise.delay(50).then(() => {
@@ -23,9 +23,9 @@ tap.test("async multiple calls", function(t) {
     log: false
   });
 
-  var borrowedObjects = [];
+  const borrowedObjects = [];
 
-  var acquireRelease = function(
+  const acquireRelease = function(
     num,
     inUseCount,
     availableCount,
@@ -36,7 +36,7 @@ tap.test("async multiple calls", function(t) {
     availableCount = availableCount === undefined ? 0 : availableCount;
 
     //console.log("Request " + num + " - available " + pool.available);
-    return pool.acquire().then(function(obj) {
+    return pool.acquire().then(obj => {
       // check we haven't already borrowed this before:
       t.equal(
         borrowedObjects.indexOf(obj),
@@ -49,7 +49,7 @@ tap.test("async multiple calls", function(t) {
       t.ok(createCount <= 3);
 
       return Promise.delay(releaseTimeout).then(() => {
-        var pos = borrowedObjects.indexOf(obj);
+        const pos = borrowedObjects.indexOf(obj);
         borrowedObjects.splice(pos, 1);
 
         //console.log("Release " + num + " - object id:", obj.id);

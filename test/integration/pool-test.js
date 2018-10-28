@@ -1,15 +1,15 @@
 "use strict";
 
-var tap = require("tap");
-var Pool = require("../..").Pool;
-var utils = require("../utils");
-var Promise = require("bluebird");
-var ResourceFactory = utils.ResourceFactory;
+const tap = require("tap");
+const Pool = require("../..").Pool;
+const utils = require("../utils");
+const Promise = require("bluebird");
+const ResourceFactory = utils.ResourceFactory;
 
-tap.test("pool expands only to max limit", function(t) {
-  var resourceFactory = new ResourceFactory();
+tap.test("pool expands only to max limit", t => {
+  const resourceFactory = new ResourceFactory();
 
-  var factory = {
+  const factory = {
     name: "test1",
     create: resourceFactory.create.bind(resourceFactory),
     destroy: resourceFactory.destroy.bind(resourceFactory),
@@ -20,7 +20,7 @@ tap.test("pool expands only to max limit", function(t) {
     acquireTimeoutMillis: 100
   };
 
-  var pool = new Pool(factory);
+  const pool = new Pool(factory);
 
   pool
     .acquire()
@@ -35,10 +35,10 @@ tap.test("pool expands only to max limit", function(t) {
     .catch(t.threw);
 });
 
-tap.test("removes correct object on reap", function(t) {
-  var resourceFactory = new ResourceFactory();
+tap.test("removes correct object on reap", t => {
+  const resourceFactory = new ResourceFactory();
 
-  var pool = new Pool({
+  const pool = new Pool({
     name: "test3",
     create: resourceFactory.create.bind(resourceFactory),
     destroy: resourceFactory.destroy.bind(resourceFactory),
@@ -49,7 +49,7 @@ tap.test("removes correct object on reap", function(t) {
 
   pool.acquire().then(client => {
     // should be removed second
-    setTimeout(function() {
+    setTimeout(() => {
       pool.destroy(client);
     }, 5);
   });
@@ -59,20 +59,20 @@ tap.test("removes correct object on reap", function(t) {
     pool.destroy(client);
   });
 
-  setTimeout(function() {
+  setTimeout(() => {
     t.equal(1, resourceFactory.bin[0].id);
     t.equal(0, resourceFactory.bin[1].id);
     t.end();
   }, 100);
 });
 
-tap.test("drains", function(t) {
-  var count = 5;
-  var acquired = 0;
+tap.test("drains", t => {
+  const count = 5;
+  let acquired = 0;
 
-  var resourceFactory = new ResourceFactory();
+  const resourceFactory = new ResourceFactory();
 
-  var pool = new Pool({
+  const pool = new Pool({
     name: "test4",
     create: resourceFactory.create.bind(resourceFactory),
     destroy: resourceFactory.destroy.bind(resourceFactory),
@@ -83,7 +83,7 @@ tap.test("drains", function(t) {
   });
 
   // request 5 resources that release after 250ms
-  for (var i = 0; i < count; i++) {
+  for (let i = 0; i < count; i++) {
     pool.acquire().then(client => {
       acquired += 1;
       t.equal(typeof client.id, "number");
@@ -113,12 +113,12 @@ tap.test("drains", function(t) {
     .catch(t.threw);
 });
 
-tap.test("logging", function(t) {
-  var logLevels = { verbose: 0, info: 1, warn: 2, error: 3 };
-  var logMessages = { verbose: [], info: [], warn: [], error: [] };
-  var resourceFactory = new ResourceFactory();
+tap.test("logging", t => {
+  const logLevels = { verbose: 0, info: 1, warn: 2, error: 3 };
+  const logMessages = { verbose: [], info: [], warn: [], error: [] };
+  const resourceFactory = new ResourceFactory();
 
-  var factory = {
+  const factory = {
     name: "test12",
     create: resourceFactory.create.bind(resourceFactory),
     destroy: () => {},
@@ -130,13 +130,13 @@ tap.test("logging", function(t) {
       testlog(msg, level);
     }
   };
-  var testlog = function(msg, level) {
+  const testlog = function(msg, level) {
     t.ok(level in logLevels);
     logMessages[level].push(msg);
   };
 
-  var pool = new Pool(factory);
-  var pool2 = new Pool({
+  const pool = new Pool(factory);
+  const pool2 = new Pool({
     name: "testNoLog",
     create: resourceFactory.create.bind(resourceFactory),
     destroy: () => {},
@@ -161,9 +161,9 @@ tap.test("logging", function(t) {
     .catch(t.threw);
 });
 
-tap.test("removes from available objects on destroy", function(t) {
-  var destroyCalled = false;
-  var factory = {
+tap.test("removes from available objects on destroy", t => {
+  let destroyCalled = false;
+  const factory = {
     name: "test13",
     create: function() {
       return Promise.resolve({});
@@ -177,7 +177,7 @@ tap.test("removes from available objects on destroy", function(t) {
     idleTimeoutMillis: 100
   };
 
-  var pool = new Pool(factory);
+  const pool = new Pool(factory);
 
   pool
     .acquire()
@@ -193,13 +193,13 @@ tap.test("removes from available objects on destroy", function(t) {
     });
 });
 
-tap.test("removes from available objects on validation failure", function(t) {
-  var destroyCalled = 0;
-  var validateCalled = 0;
-  var destroyedClient = null;
-  var count = 0;
+tap.test("removes from available objects on validation failure", t => {
+  let destroyCalled = 0;
+  let validateCalled = 0;
+  let destroyedClient = null;
+  let count = 0;
 
-  var factory = {
+  const factory = {
     name: "test14",
     create: () => {
       return Promise.resolve({ count: count++ });
@@ -217,7 +217,7 @@ tap.test("removes from available objects on validation failure", function(t) {
     idleTimeoutMillis: 100
   };
 
-  var pool = new Pool(factory);
+  const pool = new Pool(factory);
 
   pool
     .acquire()
@@ -242,10 +242,10 @@ tap.test("removes from available objects on validation failure", function(t) {
     .catch(t.threw);
 });
 
-tap.test("acquire resolves after some failures", function(t) {
-  var rejected = 0;
+tap.test("acquire resolves after some failures", t => {
+  let rejected = 0;
 
-  var factory = {
+  const factory = {
     name: "test16",
     create: function() {
       rejected++;
@@ -262,7 +262,7 @@ tap.test("acquire resolves after some failures", function(t) {
     min: 0
   };
 
-  var pool = new Pool(factory);
+  const pool = new Pool(factory);
 
   Promise.resolve()
     .then(() => t.rejects(pool.acquire(), new Error("Create error")))
@@ -275,8 +275,8 @@ tap.test("acquire resolves after some failures", function(t) {
     .catch(t.threw);
 });
 
-tap.test("returns only valid object to the pool", function(t) {
-  var pool = new Pool({
+tap.test("returns only valid object to the pool", t => {
+  const pool = new Pool({
     name: "test17",
     create: function() {
       return Promise.delay(1).then(() => ({ id: "validId" }));

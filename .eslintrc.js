@@ -4,12 +4,13 @@ module.exports = {
       "warn",
       "global"
     ],
-    "no-var": "off",
-    "prefer-const": "off",
+    "no-var": "error",
+    "prefer-const": "error",
     "semi": [
       "error",
       "always"
     ],
+    "prefer-arrow-callback": "error",
     "no-caller": "error",
     "no-undef": "error",
     "no-unused-vars": "error",

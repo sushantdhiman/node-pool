@@ -1,12 +1,12 @@
 "use strict";
 
-var tap = require("tap");
-var Promise = require("bluebird");
-var Pool = require("../..").Pool;
-var random = () => Math.floor(Math.random() * 1000);
+const tap = require("tap");
+const Promise = require("bluebird");
+const Pool = require("../..").Pool;
+const random = () => Math.floor(Math.random() * 1000);
 
-tap.test("pool.name", function(t) {
-  var pool = new Pool({
+tap.test("pool.name", t => {
+  const pool = new Pool({
     name: "test-pool.name",
     create: () => Promise.resolve({ id: random() }),
     destroy: () => {},
@@ -19,8 +19,8 @@ tap.test("pool.name", function(t) {
   t.end();
 });
 
-tap.test("pool.size", function(t) {
-  var pool = new Pool({
+tap.test("pool.size", t => {
+  const pool = new Pool({
     name: "test-pool.size",
     create: () => Promise.resolve({ id: random() }),
     destroy: () => {},
@@ -54,8 +54,8 @@ tap.test("pool.size", function(t) {
     .catch(t.threw);
 });
 
-tap.test("pool.available", function(t) {
-  var pool = new Pool({
+tap.test("pool.available", t => {
+  const pool = new Pool({
     name: "test-pool.available",
     create: () => Promise.resolve({ id: random() }),
     destroy: () => {},

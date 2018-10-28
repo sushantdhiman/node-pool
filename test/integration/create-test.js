@@ -1,13 +1,13 @@
 "use strict";
 
-var tap = require("tap");
-var Promise = require("bluebird");
-var Pool = require("../..").Pool;
+const tap = require("tap");
+const Promise = require("bluebird");
+const Pool = require("../..").Pool;
 
-tap.test("factory.create", function(t) {
-  tap.test("handle creation errors", function(t) {
-    var created = 0;
-    var pool = new Pool({
+tap.test("factory.create", t => {
+  tap.test("handle creation errors", t => {
+    let created = 0;
+    const pool = new Pool({
       name: "test-create-errors",
       create: function() {
         if (created++ < 5) {
@@ -26,7 +26,7 @@ tap.test("factory.create", function(t) {
     const tests = [];
 
     // ensure that creation errors do not populate the pool.
-    for (var i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 5; i++) {
       tests.push(t.rejects(pool.acquire(), new Error(`Error ${i} occurred.`)));
     }
 
@@ -40,9 +40,9 @@ tap.test("factory.create", function(t) {
       .catch(t.threw);
   });
 
-  tap.test("handle creation errors from delayed creates", function(t) {
-    var created = 0;
-    var pool = new Pool({
+  tap.test("handle creation errors from delayed creates", t => {
+    let created = 0;
+    const pool = new Pool({
       name: "test-async-create-errors",
       create: function() {
         if (created++ < 5) {
@@ -67,7 +67,7 @@ tap.test("factory.create", function(t) {
     const tests = [];
 
     // ensure that creation errors do not populate the pool.
-    for (var i = 0; i < 5; i++) {
+    for (let i = 0; i < 5; i++) {
       tests.push(t.rejects(pool.acquire(), new Error(`Error occurred.`)));
     }
 
