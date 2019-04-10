@@ -1,7 +1,5 @@
 "use strict";
 
-const Promise = require("bluebird");
-
 /**
  * Generic class for handling creation of resources
  * for testing
@@ -14,7 +12,7 @@ class ResourceFactory {
   }
 
   create() {
-    return Promise.delay(1).then(() => ({
+    return delay(1).then(() => ({
       id: this.created++
     }));
   }
@@ -30,3 +28,8 @@ class ResourceFactory {
 }
 
 exports.ResourceFactory = ResourceFactory;
+
+function delay(ms) {
+  return new Promise(res => setTimeout(res, ms));
+}
+exports.delay = delay;

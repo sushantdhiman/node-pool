@@ -1,10 +1,8 @@
 "use strict";
 
 const tap = require("tap");
-const Pool = require("../..").Pool;
-const utils = require("../utils");
-const Promise = require("bluebird");
-const ResourceFactory = utils.ResourceFactory;
+const { Pool, TimeoutError } = require("../..");
+const { ResourceFactory, delay } = require("../utils");
 
 tap.test("pool expands only to max limit", t => {
   const resourceFactory = new ResourceFactory();
@@ -26,7 +24,7 @@ tap.test("pool expands only to max limit", t => {
     .acquire()
     .then(obj => {
       return pool.acquire().catch(e => {
-        t.ok(e instanceof Promise.TimeoutError);
+        t.ok(e instanceof TimeoutError);
         t.ok(e.message === "Operation timeout");
         pool.release(obj);
         t.end();
@@ -279,7 +277,7 @@ tap.test("returns only valid object to the pool", t => {
   const pool = new Pool({
     name: "test17",
     create: function() {
-      return Promise.delay(1).then(() => ({ id: "validId" }));
+      return delay(1).then(() => ({ id: "validId" }));
     },
     destroy: () => {},
     validate: () => {},

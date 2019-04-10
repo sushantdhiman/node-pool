@@ -2,7 +2,7 @@
 
 const tap = require("tap");
 const Pool = require("../..").Pool;
-const Promise = require("bluebird");
+const { delay } = require("../utils");
 
 tap.test("async multiple calls", t => {
   let createCount = 0;
@@ -10,7 +10,7 @@ tap.test("async multiple calls", t => {
   const pool = new Pool({
     name: "test",
     create: function() {
-      return Promise.delay(50).then(() => {
+      return delay(50).then(() => {
         createCount += 1;
         return Promise.resolve({ id: createCount });
       });
@@ -48,7 +48,7 @@ tap.test("async multiple calls", t => {
       //console.log("Acquire " + num + " - object id:", obj.id);
       t.ok(createCount <= 3);
 
-      return Promise.delay(releaseTimeout).then(() => {
+      return delay(releaseTimeout).then(() => {
         const pos = borrowedObjects.indexOf(obj);
         borrowedObjects.splice(pos, 1);
 

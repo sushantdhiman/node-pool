@@ -1,8 +1,8 @@
 "use strict";
 
 const tap = require("tap");
-const Promise = require("bluebird");
 const Pool = require("../..").Pool;
+const { delay } = require("../utils");
 
 tap.test("factory.create", t => {
   tap.test("handle creation errors", t => {
@@ -46,11 +46,11 @@ tap.test("factory.create", t => {
       name: "test-async-create-errors",
       create: function() {
         if (created++ < 5) {
-          return Promise.delay(10).then(() =>
+          return delay(10).then(() =>
             Promise.reject(new Error("Error occurred."))
           );
         } else {
-          return Promise.delay(10).then(() => Promise.resolve({ id: created }));
+          return delay(10).then(() => Promise.resolve({ id: created }));
         }
       },
       destroy: () => {},

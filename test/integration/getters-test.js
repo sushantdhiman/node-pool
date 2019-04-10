@@ -1,7 +1,6 @@
 "use strict";
 
 const tap = require("tap");
-const Promise = require("bluebird");
 const Pool = require("../..").Pool;
 const random = () => Math.floor(Math.random() * 1000);
 
