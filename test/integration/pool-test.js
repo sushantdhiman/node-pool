@@ -191,6 +191,61 @@ tap.test("removes from available objects on destroy", t => {
     });
 });
 
+tap.test(
+  "decrement _count only when resource is actually removed from queues",
+  t => {
+    let destroyCalled = 0;
+    const factory = {
+      name: "test14",
+      create: function() {
+        return Promise.resolve({});
+      },
+      destroy: function() {
+        destroyCalled++;
+      },
+      validate: () => {},
+      max: 2,
+      min: 0,
+      idleTimeoutMillis: 100
+    };
+
+    const pool = new Pool(factory);
+
+    Promise.all([pool.acquire(), pool.acquire()])
+      .then(([resource1, resource2]) => {
+        t.equal(pool.available, 0);
+        t.equal(pool.using, 2);
+        t.equal(pool.waiting, 0);
+        t.equal(pool.size, 2);
+
+        pool.destroy(resource1);
+        pool.destroy(resource1);
+        pool.destroy(resource1);
+        pool.destroy(resource1);
+
+        t.equal(destroyCalled, 1);
+        t.equal(pool.available, 0);
+        t.equal(pool.using, 1);
+        t.equal(pool.waiting, 0);
+        t.equal(pool.size, 1);
+
+        pool.destroy(resource2);
+        pool.destroy(resource2);
+        pool.destroy(resource2);
+        pool.destroy(resource2);
+
+        t.equal(destroyCalled, 2);
+        t.equal(pool.available, 0);
+        t.equal(pool.using, 0);
+        t.equal(pool.waiting, 0);
+        t.equal(pool.size, 0);
+
+        t.end();
+      })
+      .catch(t.threw);
+  }
+);
+
 tap.test("removes from available objects on validation failure", t => {
   let destroyCalled = 0;
   let validateCalled = 0;
@@ -198,7 +253,7 @@ tap.test("removes from available objects on validation failure", t => {
   let count = 0;
 
   const factory = {
-    name: "test14",
+    name: "test15",
     create: () => {
       return Promise.resolve({ count: count++ });
     },
@@ -244,7 +299,7 @@ tap.test("acquire resolves after some failures", t => {
   let rejected = 0;
 
   const factory = {
-    name: "test16",
+    name: "test17",
     create: function() {
       rejected++;
 
@@ -275,7 +330,7 @@ tap.test("acquire resolves after some failures", t => {
 
 tap.test("returns only valid object to the pool", t => {
   const pool = new Pool({
-    name: "test17",
+    name: "test18",
     create: function() {
       return delay(1).then(() => ({ id: "validId" }));
     },
