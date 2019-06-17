@@ -191,6 +191,45 @@ tap.test("removes from available objects on destroy", t => {
     });
 });
 
+tap.test("removes all available objects on destroyAllNow", t => {
+  const factory = {
+    createCount: 0,
+    destroyCount: 0,
+    name: "test13",
+    create() {
+      return Promise.resolve({ connection: ++this.createCount });
+    },
+    destroy() {
+      this.destroyCount++;
+      return Promise.resolve({});
+    },
+    validate: () => {},
+    max: 2,
+    min: 0,
+    idleTimeoutMillis: 100,
+    resetCounters() {
+      this.createCount = this.destroyCount = 0;
+    }
+  };
+
+  const pool = new Pool(factory);
+
+  pool
+    .acquire()
+    .then(connection => pool.release(connection))
+    .then(connection => pool.acquire(connection))
+    .then(connection => pool.release(connection))
+    .then(obj => pool.destroyAllNow(obj))
+    .then(() => {
+      t.equal(factory.createCount, 2);
+      t.equal(factory.destroyCount, 2);
+      t.equal(pool.available, 0);
+      t.equal(pool.using, 0);
+      t.equal(pool.waiting, 0);
+      t.end();
+    });
+});
+
 tap.test(
   "decrement _count only when resource is actually removed from queues",
   t => {
