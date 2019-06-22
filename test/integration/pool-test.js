@@ -361,3 +361,55 @@ tap.test("returns only valid object to the pool", t => {
     })
     .catch(t.threw);
 });
+
+tap.test(
+  "destroyAllNow should call factory.destroy for resources being removed",
+  t => {
+    let destroyCalled = 0;
+    const factory = {
+      name: "test19",
+      create: function() {
+        return Promise.resolve({});
+      },
+      destroy: function() {
+        destroyCalled++;
+      },
+      validate: () => {},
+      max: 2,
+      min: 0,
+      idleTimeoutMillis: 100
+    };
+
+    const pool = new Pool(factory);
+
+    Promise.all([pool.acquire(), pool.acquire()])
+      .then(([resource1, resource2]) => {
+        t.equal(destroyCalled, 0);
+        t.equal(pool.available, 0);
+        t.equal(pool.using, 2);
+        t.equal(pool.waiting, 0);
+        t.equal(pool.size, 2);
+
+        pool.release(resource1);
+        pool.release(resource2);
+
+        t.equal(destroyCalled, 0);
+        t.equal(pool.available, 2);
+        t.equal(pool.using, 0);
+        t.equal(pool.waiting, 0);
+        t.equal(pool.size, 2);
+
+        return pool.destroyAllNow();
+      })
+      .then(() => {
+        t.equal(destroyCalled, 2);
+        t.equal(pool.available, 0);
+        t.equal(pool.using, 0);
+        t.equal(pool.waiting, 0);
+        t.equal(pool.size, 0);
+
+        t.end();
+      })
+      .catch(t.threw);
+  }
+);
