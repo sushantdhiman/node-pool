@@ -33,6 +33,35 @@ tap.test("pool expands only to max limit", t => {
     .catch(t.threw);
 });
 
+tap.test("pool uses LIFO", t => {
+  const resourceFactory = new ResourceFactory();
+
+  const factory = {
+    name: "test1",
+    create: resourceFactory.create.bind(resourceFactory),
+    destroy: resourceFactory.destroy.bind(resourceFactory),
+    validate: resourceFactory.validate.bind(resourceFactory),
+    max: 2,
+    min: 0,
+    idleTimeoutMillis: 100,
+    acquireTimeoutMillis: 100
+  };
+
+  const pool = new Pool(factory);
+
+  pool.acquire().then(clientA => {
+    pool.acquire().then(clientB => {
+      pool.release(clientA);
+      pool.release(clientB);
+
+      pool.acquire().then(clientC => {
+        t.equal(clientB, clientC);
+        t.end();
+      });
+    });
+  });
+});
+
 tap.test("removes correct object on reap", t => {
   const resourceFactory = new ResourceFactory();
 
