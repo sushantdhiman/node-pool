@@ -1,7 +1,7 @@
 # sequelize-pool
 
 [![npm](https://img.shields.io/npm/v/sequelize-pool.svg?style=flat-square)](https://www.npmjs.com/package/sequelize-pool)
-[![Travis (.org)](https://img.shields.io/travis/sushantdhiman/sequelize-pool.svg?style=flat-square)](https://travis-ci.org/sushantdhiman/sequelize-pool)
+[![Travis (.org)](https://img.shields.io/travis/com/sequelize/sequelize-pool.svg?style=flat-square)](https://travis-ci.com/sequelize/sequelize-pool)
 
 
   Resource pool. Can be used to reuse or throttle expensive resources such as
@@ -116,10 +116,10 @@ pool.available
 // returns number of callers waiting to acquire a resource
 pool.waiting
 
-// returns number of maxixmum number of resources allowed by ppol
+// returns number of maxixmum number of resources allowed by pool
 pool.maxSize
 
-// returns number of minimum number of resources allowed by ppol
+// returns number of minimum number of resources allowed by pool
 pool.minSize
 
 ```
