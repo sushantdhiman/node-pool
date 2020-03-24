@@ -43,6 +43,10 @@ var pool = new Pool({
     idleTimeoutMillis : 30000,
     // Delay in milliseconds after which pending acquire request in the pool will be rejected.
     acquireTimeoutMillis: 30000,
+    // optional. if you set this, the resource will be destroyed and replaced after it has been used
+    // `maxUses` number of times, which can help with re-balancing when pool members are added after
+    // the process has started and already filled the pool with healthy connections.
+    maxUses  : 1000,
      // Function, defaults to console.log
     log : true
 });
