@@ -471,14 +471,12 @@ tap.test("pool destroys a resource when maxUses is reached", t => {
       pool.release(clientA);
 
       pool.acquire().then(clientC => {
+        // The third client should be new because the second was end-of-lifed
         t.notEqual(clientB, clientC);
+        // assert the first connection was destroyed once the max-use limit was reached
+        t.equal(0, resourceFactory.bin[0].id);
+        t.end();
       });
     });
   });
-
-  // assert the first connection was destroyed once the max-use limit was reached
-  setTimeout(() => {
-    t.equal(0, resourceFactory.bin[0].id);
-    t.end();
-  }, 100);
 });
