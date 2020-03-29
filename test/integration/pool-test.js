@@ -442,3 +442,41 @@ tap.test(
       .catch(t.threw);
   }
 );
+
+tap.test("pool destroys a resource when maxUses is reached", t => {
+  const resourceFactory = new ResourceFactory();
+
+  const factory = {
+    name: "test20",
+    create: resourceFactory.create.bind(resourceFactory),
+    destroy: resourceFactory.destroy.bind(resourceFactory),
+    validate: resourceFactory.validate.bind(resourceFactory),
+    max: 1,
+    min: 0,
+    maxUses: 2,
+    idleTimeoutMillis: 100,
+    acquireTimeoutMillis: 100
+  };
+
+  const pool = new Pool(factory);
+
+  pool.acquire().then(clientA => {
+    // first use
+    pool.release(clientA);
+    pool.acquire().then(clientB => {
+      // second use
+      t.equal(clientA, clientB);
+
+      // should end-of-life the resource
+      pool.release(clientA);
+
+      pool.acquire().then(clientC => {
+        // The third client should be new because the second was end-of-lifed
+        t.notEqual(clientB, clientC);
+        // assert the first connection was destroyed once the max-use limit was reached
+        t.equal(0, resourceFactory.bin[0].id);
+        t.end();
+      });
+    });
+  });
+});
