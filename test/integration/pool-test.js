@@ -480,3 +480,34 @@ tap.test("pool destroys a resource when maxUses is reached", t => {
     });
   });
 });
+
+tap.test("pool destroys an expired without leaking to a pending request", t => {
+  const resourceFactory = new ResourceFactory();
+
+  const factory = {
+    name: "test21",
+    create: resourceFactory.create.bind(resourceFactory),
+    destroy: resourceFactory.destroy.bind(resourceFactory),
+    validate: resourceFactory.validate.bind(resourceFactory),
+    max: 1,
+    min: 0,
+    maxUses: 1,
+    idleTimeoutMillis: 100,
+    acquireTimeoutMillis: 100
+  };
+
+  const pool = new Pool(factory);
+
+  pool.acquire().then(clientA => {
+    // Queue an acquisition prior to releasing it...this request should get a
+    // brand new client (a bug in the original implementation of maxUses)
+    // caused the pending requests to get a connection that was about to be
+    // destroyed.
+    pool.acquire().then(clientB => {
+      t.notEqual(clientA, clientB);
+      pool.release(clientB);
+      t.end();
+    });
+    pool.release(clientA);
+  });
+});
