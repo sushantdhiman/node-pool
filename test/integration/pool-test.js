@@ -481,7 +481,8 @@ tap.test("pool destroys a resource when maxUses is reached", t => {
   });
 });
 
-tap.test("pool destroys an expired without leaking to a pending request", t => {
+tap.test("pool does not leak expired resources to pending requests", t => {
+  // Built to test a bug fix introduced in https://github.com/sequelize/sequelize-pool/pull/18
   const resourceFactory = new ResourceFactory();
 
   const factory = {
