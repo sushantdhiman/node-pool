@@ -4,12 +4,12 @@ const tap = require("tap");
 const Pool = require("../..").Pool;
 const { delay } = require("../utils");
 
-tap.test("async multiple calls", t => {
+tap.test("async multiple calls", (t) => {
   let createCount = 0;
 
   const pool = new Pool({
     name: "test",
-    create: function() {
+    create: function () {
       return delay(50).then(() => {
         createCount += 1;
         return Promise.resolve({ id: createCount });
@@ -20,12 +20,12 @@ tap.test("async multiple calls", t => {
     max: 3,
     min: 0,
     idleTimeoutMillis: 100,
-    log: false
+    log: false,
   });
 
   const borrowedObjects = [];
 
-  const acquireRelease = function(
+  const acquireRelease = function (
     num,
     inUseCount,
     availableCount,
@@ -36,7 +36,7 @@ tap.test("async multiple calls", t => {
     availableCount = availableCount === undefined ? 0 : availableCount;
 
     //console.log("Request " + num + " - available " + pool.available);
-    return pool.acquire().then(obj => {
+    return pool.acquire().then((obj) => {
       // check we haven't already borrowed this before:
       t.equal(
         borrowedObjects.indexOf(obj),
@@ -70,7 +70,7 @@ tap.test("async multiple calls", t => {
     acquireRelease(9, 3, 0, 50),
     acquireRelease(10, 3, 0, 50),
     acquireRelease(11),
-    acquireRelease(12)
+    acquireRelease(12),
   ])
     .then(() => pool.drain())
     .then(() => {

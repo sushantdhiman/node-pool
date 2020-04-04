@@ -13,7 +13,7 @@ class ResourceFactory {
 
   create() {
     return delay(1).then(() => ({
-      id: this.created++
+      id: this.created++,
     }));
   }
 
@@ -30,6 +30,6 @@ class ResourceFactory {
 exports.ResourceFactory = ResourceFactory;
 
 function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 exports.delay = delay;

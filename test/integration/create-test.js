@@ -4,12 +4,12 @@ const tap = require("tap");
 const Pool = require("../..").Pool;
 const { delay } = require("../utils");
 
-tap.test("factory.create", t => {
-  tap.test("handle creation errors", t => {
+tap.test("factory.create", (t) => {
+  tap.test("handle creation errors", (t) => {
     let created = 0;
     const pool = new Pool({
       name: "test-create-errors",
-      create: function() {
+      create: function () {
         if (created++ < 5) {
           return Promise.reject(new Error(`Error ${created} occurred.`));
         } else {
@@ -20,7 +20,7 @@ tap.test("factory.create", t => {
       validate: () => {},
       max: 1,
       min: 0,
-      idleTimeoutMillis: 1000
+      idleTimeoutMillis: 1000,
     });
 
     const tests = [];
@@ -40,11 +40,11 @@ tap.test("factory.create", t => {
       .catch(t.threw);
   });
 
-  tap.test("handle creation errors from delayed creates", t => {
+  tap.test("handle creation errors from delayed creates", (t) => {
     let created = 0;
     const pool = new Pool({
       name: "test-async-create-errors",
-      create: function() {
+      create: function () {
         if (created++ < 5) {
           return delay(10).then(() =>
             Promise.reject(new Error("Error occurred."))
@@ -57,7 +57,7 @@ tap.test("factory.create", t => {
       validate: () => {},
       max: 1,
       min: 0,
-      idleTimeoutMillis: 1000
+      idleTimeoutMillis: 1000,
     });
 
     // FIXME: this section no longer proves anything as factory

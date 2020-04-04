@@ -3,14 +3,14 @@
 const tap = require("tap");
 const Pool = require("../..").Pool;
 
-tap.test("fail for max < min", t => {
+tap.test("fail for max < min", (t) => {
   const factory = {
     name: "test-config",
     create: () => {},
     destroy: () => {},
     validate: () => {},
     max: 1,
-    min: 12
+    min: 12,
   };
 
   t.throws(() => {
@@ -19,13 +19,13 @@ tap.test("fail for max < min", t => {
   t.end();
 });
 
-tap.test("fail without factory.create", t => {
+tap.test("fail without factory.create", (t) => {
   const factory = {
     name: "test-config",
     destroy: () => {},
     validate: () => {},
     max: 1,
-    min: 0
+    min: 0,
   };
 
   t.throws(() => {
@@ -34,13 +34,13 @@ tap.test("fail without factory.create", t => {
   t.end();
 });
 
-tap.test("fail without factory.destroy", t => {
+tap.test("fail without factory.destroy", (t) => {
   const factory = {
     name: "test-config",
     create: () => {},
     validate: () => {},
     max: 1,
-    min: 0
+    min: 0,
   };
 
   t.throws(() => {
@@ -49,13 +49,13 @@ tap.test("fail without factory.destroy", t => {
   t.end();
 });
 
-tap.test("fail without factory.validate", t => {
+tap.test("fail without factory.validate", (t) => {
   const factory = {
     name: "test-config",
     create: () => {},
     destroy: () => {},
     max: 1,
-    min: 0
+    min: 0,
   };
 
   t.throws(() => {
