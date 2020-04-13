@@ -128,7 +128,7 @@ pool.minSize
 
 ```
 
-# About maxUses
+## Using `maxUses` option
 
 Imagine a scenario where you have 10 app servers (hosting an API) that each connect to a read-replica set of 3 members, accessible behind a DNS name that round-robins IPs for the 3 replicas.  Each app server rus a connection pool of 25 connections.
 
