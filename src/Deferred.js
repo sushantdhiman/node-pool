@@ -3,11 +3,12 @@
 const { TimeoutError } = require("./TimeoutError");
 
 class Deferred {
+  /*::
   _timeout: TimeoutID;
   _promise: Promise<mixed>;
   _resolve: (mixed) => void;
   _reject: (error: Error) => void;
-
+  */
   constructor() {
     this._promise = new Promise((resolve, reject) => {
       this._reject = reject;

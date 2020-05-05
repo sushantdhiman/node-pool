@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * Generic class for handling creation of resources
  * for testing

@@ -2,9 +2,10 @@
 
 const Deferred = require("./Deferred");
 
-export type LogLevel = "verbose" | "info" | "error";
-export type FactoryLogger = (string, LogLevel) => void;
-export type Factory = {
+/*::
+type LogLevel = "verbose" | "info" | "error";
+type FactoryLogger = (string, LogLevel) => void;
+type Factory = {
   name: string,
   create: () => Promise<mixed>,
   destroy: (mixed) => void,
@@ -27,6 +28,7 @@ type InUseObject = {
   resource: RawResource,
   useCount: number,
 };
+*/
 
 /**
  * Generate an Object pool with a specified `factory`.
@@ -73,6 +75,7 @@ type InUseObject = {
  *   that will be used instead. The function expects the arguments msg, loglevel
  */
 class Pool {
+  /*::
   _factory: Factory;
   _count: number;
   _draining: boolean;
@@ -91,6 +94,7 @@ class Pool {
   // timing controls
   _removeIdleTimer: TimeoutID;
   _removeIdleScheduled: boolean;
+  */
 
   /**
    * Generate an object pool with a specified `factory`.
