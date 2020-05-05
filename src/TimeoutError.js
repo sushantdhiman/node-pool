@@ -1,4 +1,4 @@
-"use strict";
+// @flow strict
 
 class TimeoutError extends Error {}
 

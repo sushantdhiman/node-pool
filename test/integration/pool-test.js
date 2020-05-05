@@ -1,5 +1,3 @@
-"use strict";
-
 const tap = require("tap");
 const { Pool, TimeoutError } = require("../..");
 const { ResourceFactory, delay } = require("../utils");

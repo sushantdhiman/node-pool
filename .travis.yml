@@ -12,6 +12,7 @@ install:
   - npm install
 
 script:
+  - npm run flow
   - npm run test
 
 matrix:
