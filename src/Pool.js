@@ -1,32 +1,32 @@
-//       strict
+// @flow strict
 
 const Deferred = require("./Deferred");
 
-                                                    
-                                                       
-                       
-               
-                               
-                           
-                                
-              
-              
-                   
-                             
-                                
-                              
-                                
-  
-                         
-                     
-                        
-                  
-                   
-  
-                    
-                        
-                   
-  
+export type LogLevel = "verbose" | "info" | "error";
+export type FactoryLogger = (string, LogLevel) => void;
+export type Factory = {
+  name: string,
+  create: () => Promise<mixed>,
+  destroy: (mixed) => void,
+  validate: (Object) => boolean,
+  max: number,
+  min: number,
+  maxUses?: number,
+  idleTimeoutMillis?: number,
+  acquireTimeoutMillis?: number,
+  reapIntervalMillis?: number,
+  log?: FactoryLogger | boolean,
+};
+type RawResource = mixed;
+type PooledObject = {
+  resource: RawResource,
+  timeout: number,
+  useCount: number,
+};
+type InUseObject = {
+  resource: RawResource,
+  useCount: number,
+};
 
 /**
  * Generate an Object pool with a specified `factory`.
@@ -73,29 +73,29 @@ const Deferred = require("./Deferred");
  *   that will be used instead. The function expects the arguments msg, loglevel
  */
 class Pool {
-  _factory         ;
-  _count        ;
-  _draining         ;
+  _factory: Factory;
+  _count: number;
+  _draining: boolean;
 
-  idleTimeoutMillis         = 30000;
-  acquireTimeoutMillis         = 30000;
-  reapIntervalMillis         = 1000;
-  log                          = false;
-  _maxUsesPerResource         = Infinity;
+  idleTimeoutMillis: number = 30000;
+  acquireTimeoutMillis: number = 30000;
+  reapIntervalMillis: number = 1000;
+  log: FactoryLogger | boolean = false;
+  _maxUsesPerResource: number = Infinity;
 
   // queues
-  _pendingAcquires            ;
-  _inUseObjects               ;
-  _availableObjects                ;
+  _pendingAcquires: Deferred[];
+  _inUseObjects: InUseObject[];
+  _availableObjects: PooledObject[];
 
   // timing controls
-  _removeIdleTimer           ;
-  _removeIdleScheduled         ;
+  _removeIdleTimer: TimeoutID;
+  _removeIdleScheduled: boolean;
 
   /**
    * Generate an object pool with a specified `factory`.
    */
-  constructor(factory         ) {
+  constructor(factory: Factory) {
     if (!factory.create) {
       throw new Error("create function is required");
     }
@@ -189,7 +189,7 @@ class Pool {
    * @param {string} message
    * @param {string} level
    */
-  _log(message        , level          ) {
+  _log(message: string, level: LogLevel) {
     if (typeof this.log === "function") {
       this.log(message, level);
     } else if (this.log) {
@@ -339,7 +339,7 @@ class Pool {
       });
   }
 
-  _addResourceToAvailableObjects(resource             , useCount        ) {
+  _addResourceToAvailableObjects(resource: RawResource, useCount: number) {
     const wrappedResource = {
       resource: resource,
       useCount: useCount,
@@ -351,7 +351,7 @@ class Pool {
     this._scheduleRemoveIdle();
   }
 
-  _addResourceToInUseObjects(resource             , useCount        ) {
+  _addResourceToInUseObjects(resource: RawResource, useCount: number) {
     const wrappedResource = {
       resource: resource,
       useCount: useCount,
@@ -409,7 +409,7 @@ class Pool {
    *
    * @returns {void}
    */
-  release(resource             ) {
+  release(resource: RawResource) {
     // check to see if this object has already been released
     // (i.e., is back in the pool of this._availableObjects)
     if (
@@ -473,7 +473,7 @@ class Pool {
    *
    * @returns {void}
    */
-  destroy(resource             ) {
+  destroy(resource: RawResource) {
     const available = this._availableObjects.length;
     const using = this._inUseObjects.length;
 
@@ -533,7 +533,7 @@ class Pool {
     };
 
     // No error handling needed here.
-    return new Promise      ((resolve) => check(resolve));
+    return new Promise<void>((resolve) => check(resolve));
   }
 
   /**
@@ -557,7 +557,7 @@ class Pool {
     this._removeIdleScheduled = false;
     clearTimeout(this._removeIdleTimer);
 
-    return new Promise      ((resolve) => {
+    return new Promise<void>((resolve) => {
       if (todo === 0) {
         return resolve();
       }

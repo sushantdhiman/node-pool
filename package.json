@@ -19,9 +19,13 @@
   ],
   "dependencies": {},
   "devDependencies": {
+    "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-flowtype": "^4.7.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "flow-bin": "^0.123.0",
+    "flow-remove-types": "^2.123.0",
     "prettier": "^2.0.2",
     "tap": "^14.10.7"
   },
@@ -30,9 +34,12 @@
   },
   "scripts": {
     "test": "npm run lint && npm run test:raw",
-    "lint": "eslint lib test",
-    "pretty": "prettier lib/**/*.js test/**/*.js --write",
-    "test:raw": "tap test/**/*-test.js"
+    "lint": "eslint src test",
+    "pretty": "prettier src/**/*.js test/**/*.js --write",
+    "test:raw": "tap test/**/*-test.js",
+    "flow": "./node_modules/.bin/flow",
+    "build": "flow-remove-types src/ -d lib/",
+    "prepublish": "npm run pretty && npm run build"
   },
   "license": "MIT"
 }

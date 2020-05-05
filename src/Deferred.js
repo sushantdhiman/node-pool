@@ -1,12 +1,12 @@
-//       strict
+// @flow strict
 
 const { TimeoutError } = require("./TimeoutError");
 
 class Deferred {
-  _timeout           ;
-  _promise                ;
-  _resolve                 ;
-  _reject                        ;
+  _timeout: TimeoutID;
+  _promise: Promise<mixed>;
+  _resolve: (mixed) => void;
+  _reject: (error: Error) => void;
 
   constructor() {
     this._promise = new Promise((resolve, reject) => {
@@ -15,7 +15,7 @@ class Deferred {
     });
   }
 
-  registerTimeout(timeoutInMillis        , callback            ) {
+  registerTimeout(timeoutInMillis: number, callback: () => void) {
     if (this._timeout) return;
 
     this._timeout = setTimeout(() => {
@@ -30,12 +30,12 @@ class Deferred {
     clearTimeout(this._timeout);
   }
 
-  resolve(value       ) {
+  resolve(value: mixed) {
     this._clearTimeout();
     this._resolve(value);
   }
 
-  reject(error       ) {
+  reject(error: Error) {
     this._clearTimeout();
     this._reject(error);
   }
