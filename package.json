@@ -25,6 +25,7 @@
     "eslint-plugin-flowtype": "^4.7.0",
     "eslint-plugin-prettier": "^3.1.2",
     "flow-bin": "^0.123.0",
+    "flow-copy-source": "^2.0.9",
     "flow-remove-types": "^2.123.0",
     "prettier": "^2.0.2",
     "tap": "^14.10.7"
@@ -37,8 +38,8 @@
     "lint": "eslint src test",
     "pretty": "prettier src/**/*.js test/**/*.js --write",
     "test:raw": "tap test/**/*-test.js",
-    "flow": "./node_modules/.bin/flow",
-    "build": "flow-remove-types src/ -d lib/",
+    "flow": "flow",
+    "build": "flow-remove-types src/ -d lib/ && flow-copy-source src/ lib/ && eslint --fix lib",
     "prepublish": "npm run pretty && npm run build"
   },
   "license": "MIT"

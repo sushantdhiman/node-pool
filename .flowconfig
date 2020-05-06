@@ -4,17 +4,6 @@
 <PROJECT_ROOT>/.nyc_output
 .*/node_modules/.*
 
-[untyped]
-
-[declarations]
-
 [include]
 ./src
 
-[libs]
-
-[lints]
-
-[options]
-
-[strict]
