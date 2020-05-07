@@ -5,6 +5,20 @@ const Deferred = require("./Deferred");
 /*::
 type LogLevel = "verbose" | "info" | "error";
 type FactoryLogger = (string, LogLevel) => void;
+
+// Various resources
+type RawResource = mixed;
+type PooledObject = {
+  resource: RawResource,
+  timeout: number,
+  useCount: number,
+};
+type InUseObject = {
+  resource: RawResource,
+  useCount: number,
+};
+
+// Pool options
 type Factory = {
   name: string,
   create: () => Promise<mixed>,
@@ -18,15 +32,15 @@ type Factory = {
   reapIntervalMillis?: number,
   log?: FactoryLogger | boolean,
 };
-type RawResource = mixed;
-type PooledObject = {
-  resource: RawResource,
-  timeout: number,
-  useCount: number,
-};
-type InUseObject = {
-  resource: RawResource,
-  useCount: number,
+
+// Pool interface
+interface Poolable {
+  constructor(factory: Factory): void;
+  acquire(): Promise<mixed>;
+  release(resource: RawResource): void;
+  destroy(resource: RawResource): void;
+  drain(): Promise<void>;
+  destroyAllNow(): Promise<void>;
 };
 */
 
@@ -75,7 +89,7 @@ type InUseObject = {
  *
  * @class
  */
-class Pool {
+class Pool /*:: implements Poolable */ {
   /*::
   _factory: Factory;
   _count: number;
