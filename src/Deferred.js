@@ -16,7 +16,7 @@ class Deferred {
     });
   }
 
-  registerTimeout(timeoutInMillis: number, callback: () => void) {
+  registerTimeout(timeoutInMillis /*: number*/, callback /*: () => void*/) {
     if (this._timeout) return;
 
     this._timeout = setTimeout(() => {
@@ -31,12 +31,12 @@ class Deferred {
     clearTimeout(this._timeout);
   }
 
-  resolve(value: mixed) {
+  resolve(value /*: mixed*/) {
     this._clearTimeout();
     this._resolve(value);
   }
 
-  reject(error: Error) {
+  reject(error /*: Error*/) {
     this._clearTimeout();
     this._reject(error);
   }

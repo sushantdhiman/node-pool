@@ -9,7 +9,7 @@ type Factory = {
   name: string,
   create: () => Promise<mixed>,
   destroy: (mixed) => void,
-  validate: (Object) => boolean,
+  validate: (RawResource) => boolean,
   max: number,
   min: number,
   maxUses?: number,
@@ -99,7 +99,7 @@ class Pool {
   /**
    * Generate an object pool with a specified `factory`.
    */
-  constructor(factory: Factory) {
+  constructor(factory /* : Factory*/) {
     if (!factory.create) {
       throw new Error("create function is required");
     }
@@ -133,7 +133,7 @@ class Pool {
     }
 
     if (
-      factory.maxUses &&
+      factory.maxUses !== undefined &&
       (typeof factory.maxUses !== "number" || factory.maxUses < 0)
     ) {
       throw new Error("maxUses must be an integer >= 0");
@@ -193,7 +193,7 @@ class Pool {
    * @param {string} message
    * @param {string} level
    */
-  _log(message: string, level: LogLevel) {
+  _log(message /*: string*/, level /*: LogLevel*/) {
     if (typeof this.log === "function") {
       this.log(message, level);
     } else if (this.log) {
@@ -245,9 +245,8 @@ class Pool {
   }
 
   /**
-   * Schedule removal of idle items in the pool.
-   *
-   * More schedules cannot run concurrently.
+   * Schedule removal of idle items in the pool. More schedules cannot run concurrently.
+   * @private
    */
   _scheduleRemoveIdle() {
     if (!this._removeIdleScheduled) {
@@ -267,6 +266,7 @@ class Pool {
    *    the maximum number of clients.
    *  - If creating a new client would exceed the maximum, add the client to
    *    the wait list.
+   *
    * @private
    */
   _dispense() {
@@ -307,9 +307,6 @@ class Pool {
     }
   }
 
-  /**
-   * @private
-   */
   _createResource() {
     this._count += 1;
     this._log(
@@ -343,7 +340,10 @@ class Pool {
       });
   }
 
-  _addResourceToAvailableObjects(resource: RawResource, useCount: number) {
+  _addResourceToAvailableObjects(
+    resource /*: RawResource*/,
+    useCount /*: number*/
+  ) {
     const wrappedResource = {
       resource: resource,
       useCount: useCount,
@@ -355,7 +355,10 @@ class Pool {
     this._scheduleRemoveIdle();
   }
 
-  _addResourceToInUseObjects(resource: RawResource, useCount: number) {
+  _addResourceToInUseObjects(
+    resource /*: RawResource*/,
+    useCount /*: number*/
+  ) {
     const wrappedResource = {
       resource: resource,
       useCount: useCount,
@@ -363,9 +366,6 @@ class Pool {
     this._inUseObjects.push(wrappedResource);
   }
 
-  /**
-   * @private
-   */
   _ensureMinimum() {
     let i, diff;
     if (!this._draining && this.size < this.minSize) {
@@ -413,7 +413,7 @@ class Pool {
    *
    * @returns {void}
    */
-  release(resource: RawResource) {
+  release(resource /*: RawResource*/) {
     // check to see if this object has already been released
     // (i.e., is back in the pool of this._availableObjects)
     if (
@@ -477,7 +477,7 @@ class Pool {
    *
    * @returns {void}
    */
-  destroy(resource: RawResource) {
+  destroy(resource /*: RawResource*/) {
     const available = this._availableObjects.length;
     const using = this._inUseObjects.length;
 
@@ -537,7 +537,9 @@ class Pool {
     };
 
     // No error handling needed here.
-    return new Promise<void>((resolve) => check(resolve));
+    // prettier-ignore
+    return new Promise/*:: <void> */((resolve) => check(resolve)
+    );
   }
 
   /**
@@ -561,7 +563,8 @@ class Pool {
     this._removeIdleScheduled = false;
     clearTimeout(this._removeIdleTimer);
 
-    return new Promise<void>((resolve) => {
+    // prettier-ignore
+    return new Promise/*:: <void> */((resolve) => {
       if (todo === 0) {
         return resolve();
       }
