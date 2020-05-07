@@ -31,9 +31,8 @@ type InUseObject = {
 */
 
 /**
- * Generate an Object pool with a specified `factory`.
+ * Generate an object pool with a specified `factory`.
  *
- * @class
  * @param {Object} factory
  *   Factory to be used for generating and destroying the items.
  * @param {String} [factory.name]
@@ -73,6 +72,8 @@ type InUseObject = {
  * @param {Boolean|Function} [factory.log=false]
  *   Whether the pool should log activity. If function is specified,
  *   that will be used instead. The function expects the arguments msg, loglevel
+ *
+ * @class
  */
 class Pool {
   /*::
@@ -189,9 +190,11 @@ class Pool {
 
   /**
    * logs to console or user defined log function
-   * @private
+   *
    * @param {string} message
    * @param {string} level
+   *
+   * @private
    */
   _log(message /*: string*/, level /*: LogLevel*/) {
     if (typeof this.log === "function") {
@@ -203,6 +206,7 @@ class Pool {
 
   /**
    * Checks and removes the available (idle) clients that have timed out.
+   *
    * @private
    */
   _removeIdle() {
@@ -246,6 +250,7 @@ class Pool {
 
   /**
    * Schedule removal of idle items in the pool. More schedules cannot run concurrently.
+   *
    * @private
    */
   _scheduleRemoveIdle() {
