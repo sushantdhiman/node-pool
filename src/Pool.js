@@ -86,8 +86,6 @@ interface Poolable {
  * @param {Boolean|Function} [factory.log=false]
  *   Whether the pool should log activity. If function is specified,
  *   that will be used instead. The function expects the arguments msg, loglevel
- *
- * @class
  */
 class Pool /*:: implements Poolable */ {
   /*::

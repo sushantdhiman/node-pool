@@ -12,8 +12,11 @@ This is a fork from [generic-pool@v2.5](https://github.com/coopernurse/node-pool
 
 ```sh
 npm i sequelize-pool
-yarn add sequelize-pool
 ```
+
+## API Documentation
+
+You can find documentation in [API.md](https://github.com/sequelize/sequelize-pool/blob/master/API.md)
 
 ## Example
 
@@ -26,30 +29,24 @@ var mysql2 = require("mysql2/promise");
 
 var pool = new Pool({
   name: "mysql",
-  create: function () {
-    // return Promise
+  create: async () => {
+    // create a new connection
+    // return as a promise
     return mysql2.createConnection({
       user: "scott",
       password: "tiger",
       database: "mydb",
     });
   },
-  destroy: function (client) {
-    client.end();
+  destroy: (connection) => {
+    // this function should destroy connection.
+    // pool does not wait for promise (if returned) by this method.
+    // connection is removed from pool in sync and this method is called.
+    connection.end();
   },
-  max: 10,
-  // optional. if you set this, make sure to drain() (see step 3)
-  min: 2,
-  // Delay in milliseconds after which available resources in the pool will be destroyed.
-  idleTimeoutMillis: 30000,
-  // Delay in milliseconds after which pending acquire request in the pool will be rejected.
-  acquireTimeoutMillis: 30000,
-  // optional. if you set this, the resource will be destroyed and replaced after it has been used
-  // `maxUses` number of times, which can help with re-balancing when pool members are added after
-  // the process has started and already filled the pool with healthy connections.  See below for details.
-  maxUses: 7200,
-  // Function, defaults to console.log
-  log: true,
+  validate: (connection) => connection.closed !== true,
+  max: 5,
+  min: 0,
 });
 ```
 
@@ -59,7 +56,7 @@ var pool = new Pool({
 // acquire connection
 pool.acquire().then((connection) => {
   client.query("select * from foo", [], function () {
-    // return object back to pool
+    // return connection back to pool
     pool.release(client);
   });
 });
@@ -142,22 +139,26 @@ If you set the `maxUses` configuration option, the pool will proactively retire 
 
 One way to calculate a reasonable value for `maxUses` is to identify an acceptable window for rebalancing and then solve for `maxUses`:
 
-```
-maxUses = rebalanceWindowSeconds * totalRequestsPerSecond / numAppInstances / poolSize
+```sh
+   maxUses = rebalanceWindowSeconds * totalRequestsPerSecond / numAppInstances / poolSize
 ```
 
 In the example above, assuming we acquire and release 1 connection per request and we are aiming for a 30 minute rebalancing window:
 
-```
-maxUses = rebalanceWindowSeconds * totalRequestsPerSecond / numAppInstances / poolSize
-   7200 =        1800            *          1000          /        10       /    25
+```sh
+    maxUses = rebalanceWindowSeconds * totalRequestsPerSecond / numAppInstances / poolSize
+       7200 =        1800            *          1000          /        10       /    25
 ```
 
 ...in other words we would retire and replace a connection after every 7200 uses, which we expect to be around 30 minutes under peak load.
 
 Of course, you'll want to test scenarios for your own application since every app and every traffic pattern is different.
 
-## Run Tests
+## Contributing
 
-    $ npm install
-    $ npm test
+We use [Node Tap](https://node-tap.org/) for testing.
+
+```sh
+$ npm install
+$ npm test
+```
