@@ -3,10 +3,7 @@
 [![npm](https://img.shields.io/npm/v/sequelize-pool.svg?style=flat-square)](https://www.npmjs.com/package/sequelize-pool)
 [![Travis (.org)](https://img.shields.io/travis/com/sequelize/sequelize-pool.svg?style=flat-square)](https://travis-ci.com/sequelize/sequelize-pool)
 
-Resource pool. Can be used to reuse or throttle expensive resources such as
-database connections.
-
-Pure JavaScript, ships with Flow typings.
+Flow typed pure JavaScript based resource pool. It can be used to throttle expensive resources.
 
 **Note:**
 This is a fork from [generic-pool@v2.5](https://github.com/coopernurse/node-pool/tree/v2.5).
@@ -19,7 +16,7 @@ npm i sequelize-pool
 
 ## API Documentation
 
-You can find documentation in [API.md](https://github.com/sequelize/sequelize-pool/blob/master/API.md)
+You can find full API documentation in [API.md](https://github.com/sequelize/sequelize-pool/blob/master/API.md)
 
 ## Example
 
@@ -57,12 +54,17 @@ var pool = new Pool({
 
 ```js
 // acquire connection
-pool.acquire().then((connection) => {
-  client.query("select * from foo", [], function () {
-    // return connection back to pool
-    pool.release(client);
-  });
-});
+(async () => {
+  // Get new connection from pool.
+  // This method can throw TimeoutError if connection was not created in
+  // specified `factory.acquireTimeoutMillis` time.
+  const connection = await pool.acquire();
+
+  const result = connection.query("select * from foo");
+
+  // return connection back to pool so it can be reused
+  pool.release(client);
+})();
 ```
 
 ### Step 3 - Drain pool during shutdown (optional)
