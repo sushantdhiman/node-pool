@@ -63,7 +63,7 @@ var pool = new Pool({
   const result = connection.query("select * from foo");
 
   // return connection back to pool so it can be reused
-  pool.release(client);
+  pool.release(connection);
 })();
 ```
 
