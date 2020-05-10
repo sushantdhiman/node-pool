@@ -36,7 +36,7 @@
     "test": "npm run lint && npm run test:raw",
     "lint": "eslint src test",
     "pretty": "prettier src/**/*.js test/**/*.js --write",
-    "jsdoc": "jsdoc2md src/Pool.js > API.md",
+    "docs": "jsdoc2md src/*.js > API.md",
     "test:raw": "tap test/**/*-test.js",
     "flow": "flow"
   },

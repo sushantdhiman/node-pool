@@ -1,3 +1,14 @@
+## Classes
+
+<dl>
+<dt><a href="#Pool">Pool</a></dt>
+<dd><p>Generate an object pool with a specified <code>factory</code>.</p>
+</dd>
+<dt><a href="#TimeoutError">TimeoutError</a></dt>
+<dd><p>Error which is thrown by pool when acquire request timeouts</p>
+</dd>
+</dl>
+
 <a name="Pool"></a>
 
 ## Pool
@@ -7,6 +18,13 @@ Generate an object pool with a specified `factory`.
 
 * [Pool](#Pool)
     * [new Pool(factory)](#new_Pool_new)
+    * [.size](#Pool+size)
+    * [.name](#Pool+name)
+    * [.available](#Pool+available)
+    * [.using](#Pool+using)
+    * [.waiting](#Pool+waiting)
+    * [.maxSize](#Pool+maxSize)
+    * [.minSize](#Pool+minSize)
     * [.acquire()](#Pool+acquire) ⇒ <code>Promise.&lt;Object&gt;</code>
     * [.release(resource)](#Pool+release) ⇒ <code>void</code>
     * [.destroy(resource)](#Pool+destroy) ⇒ <code>void</code>
@@ -34,6 +52,49 @@ Generate an object pool with a specified `factory`.
 | [factory.reapIntervalMillis] | <code>Number</code> | <code>1000</code> | Clean up is scheduled in every `factory.reapIntervalMillis` milliseconds. |
 | [factory.log] | <code>Boolean</code> \| <code>function</code> | <code>false</code> | Whether the pool should log activity. If function is specified,   that will be used instead. The function expects the arguments msg, loglevel |
 
+<a name="Pool+size"></a>
+
+### pool.size
+Number of resources in the pool regardless of
+whether they are free or in use
+
+**Kind**: instance property of [<code>Pool</code>](#Pool)  
+<a name="Pool+name"></a>
+
+### pool.name
+factory.name for this pool
+
+**Kind**: instance property of [<code>Pool</code>](#Pool)  
+<a name="Pool+available"></a>
+
+### pool.available
+Number of unused resources in the pool
+
+**Kind**: instance property of [<code>Pool</code>](#Pool)  
+<a name="Pool+using"></a>
+
+### pool.using
+Number of in use resources
+
+**Kind**: instance property of [<code>Pool</code>](#Pool)  
+<a name="Pool+waiting"></a>
+
+### pool.waiting
+Number of callers waiting to acquire a resource
+
+**Kind**: instance property of [<code>Pool</code>](#Pool)  
+<a name="Pool+maxSize"></a>
+
+### pool.maxSize
+Number of maximum number of resources allowed by pool
+
+**Kind**: instance property of [<code>Pool</code>](#Pool)  
+<a name="Pool+minSize"></a>
+
+### pool.minSize
+Number of minimum number of resources allowed by pool
+
+**Kind**: instance property of [<code>Pool</code>](#Pool)  
 <a name="Pool+acquire"></a>
 
 ### pool.acquire() ⇒ <code>Promise.&lt;Object&gt;</code>
@@ -87,3 +148,9 @@ specified factory.min value.  If this is not desired, set factory.min
 to zero before calling destroyAllNow()
 
 **Kind**: instance method of [<code>Pool</code>](#Pool)  
+<a name="TimeoutError"></a>
+
+## TimeoutError
+Error which is thrown by pool when acquire request timeouts
+
+**Kind**: global class  

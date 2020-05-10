@@ -103,31 +103,6 @@ pool.drain().then(() => pool.destroyAllNow());
 One side-effect of calling `drain()` is that subsequent calls to `acquire()`
 will throw an Error.
 
-## Pool info
-
-The following functions will let you get information about the pool:
-
-```js
-// returns factory.name for this pool
-pool.name;
-
-// returns number of resources in the pool regardless of
-// whether they are free or in use
-pool.size;
-
-// returns number of unused resources in the pool
-pool.available;
-
-// returns number of callers waiting to acquire a resource
-pool.waiting;
-
-// returns number of maxixmum number of resources allowed by pool
-pool.maxSize;
-
-// returns number of minimum number of resources allowed by pool
-pool.minSize;
-```
-
 ## Using `maxUses` option
 
 Imagine a scenario where you have 10 app servers (hosting an API) that each connect to a read-replica set of 3 members, accessible behind a DNS name that round-robins IPs for the 3 replicas. Each app server rus a connection pool of 25 connections.

@@ -20,7 +20,7 @@ type InUseObject = {
 
 // Pool options
 type Factory = {
-  name: string,
+  name?: string,
   create: () => Promise<mixed>,
   destroy: (mixed) => void,
   validate: (RawResource) => boolean,
@@ -172,30 +172,52 @@ class Pool /*:: implements Poolable */ {
     this._removeIdleScheduled = false;
   }
 
+  /**
+   * Number of resources in the pool regardless of
+   * whether they are free or in use
+   */
   get size() {
     return this._count;
   }
 
+  /**
+   * factory.name for this pool
+   */
   get name() {
     return this._factory.name;
   }
 
+  /**
+   * Number of unused resources in the pool
+   */
   get available() {
     return this._availableObjects.length;
   }
 
+  /**
+   * Number of in use resources
+   */
   get using() {
     return this._inUseObjects.length;
   }
 
+  /**
+   * Number of callers waiting to acquire a resource
+   */
   get waiting() {
     return this._pendingAcquires.length;
   }
 
+  /**
+   * Number of maximum number of resources allowed by pool
+   */
   get maxSize() {
     return this._factory.max;
   }
 
+  /**
+   * Number of minimum number of resources allowed by pool
+   */
   get minSize() {
     return this._factory.min;
   }
@@ -212,7 +234,9 @@ class Pool /*:: implements Poolable */ {
     if (typeof this.log === "function") {
       this.log(message, level);
     } else if (this.log) {
-      console.log(`${level.toUpperCase()} pool ${this.name} - ${message}`);
+      console.log(
+        `${level.toUpperCase()} pool ${this.name || ""} - ${message}`
+      );
     }
   }
 
