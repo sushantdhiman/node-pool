@@ -8,7 +8,7 @@ database connections.
 
 Pure JavaScript, ships with Flow typings.
 
-**Note**
+**Note:**
 This is a fork from [generic-pool@v2.5](https://github.com/coopernurse/node-pool/tree/v2.5).
 
 ## Installation

@@ -86,13 +86,13 @@ Number of callers waiting to acquire a resource
 <a name="Pool+maxSize"></a>
 
 ### pool.maxSize
-Number of maximum number of resources allowed by pool
+Maximum number of resources allowed by pool
 
 **Kind**: instance property of [<code>Pool</code>](#Pool)  
 <a name="Pool+minSize"></a>
 
 ### pool.minSize
-Number of minimum number of resources allowed by pool
+Minimum number of resources allowed by pool
 
 **Kind**: instance property of [<code>Pool</code>](#Pool)  
 <a name="Pool+acquire"></a>

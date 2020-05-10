@@ -209,14 +209,14 @@ class Pool /*:: implements Poolable */ {
   }
 
   /**
-   * Number of maximum number of resources allowed by pool
+   * Maximum number of resources allowed by pool
    */
   get maxSize() {
     return this._factory.max;
   }
 
   /**
-   * Number of minimum number of resources allowed by pool
+   * Minimum number of resources allowed by pool
    */
   get minSize() {
     return this._factory.min;
