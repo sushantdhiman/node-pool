@@ -1,4 +1,4 @@
-# sequelize-pool
+# Sequelize Pool
 
 [![npm](https://img.shields.io/npm/v/sequelize-pool.svg?style=flat-square)](https://www.npmjs.com/package/sequelize-pool)
 [![Travis (.org)](https://img.shields.io/travis/com/sequelize/sequelize-pool.svg?style=flat-square)](https://travis-ci.com/sequelize/sequelize-pool)
@@ -6,6 +6,9 @@
 Resource pool. Can be used to reuse or throttle expensive resources such as
 database connections.
 
+Pure JavaScript, ships with Flow typings.
+
+**Note**
 This is a fork from [generic-pool@v2.5](https://github.com/coopernurse/node-pool/tree/v2.5).
 
 ## Installation
