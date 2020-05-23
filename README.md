@@ -3,7 +3,7 @@
 [![npm](https://img.shields.io/npm/v/sequelize-pool.svg?style=flat-square)](https://www.npmjs.com/package/sequelize-pool)
 [![Travis (.org)](https://img.shields.io/travis/com/sequelize/sequelize-pool.svg?style=flat-square)](https://travis-ci.com/sequelize/sequelize-pool)
 
-Flow typed pure JavaScript based resource pool. It can be used to throttle expensive resources.
+Resource pool implementation. It can be used to throttle expensive resources.
 
 **Note:**
 This is a fork from [generic-pool@v2.5](https://github.com/coopernurse/node-pool/tree/v2.5).
