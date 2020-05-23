@@ -1,9 +1,9 @@
-const tap = require("tap");
-const Pool = require("../..").Pool;
+const tap = require('tap');
+const Pool = require('../..').Pool;
 
-tap.test("fail for max < min", (t) => {
+tap.test('fail for max < min', (t) => {
   const factory = {
-    name: "test-config",
+    name: 'test-config',
     create: () => {},
     destroy: () => {},
     validate: () => {},
@@ -13,13 +13,13 @@ tap.test("fail for max < min", (t) => {
 
   t.throws(() => {
     new Pool(factory);
-  }, "max is smaller than min");
+  }, 'max is smaller than min');
   t.end();
 });
 
-tap.test("fail without factory.create", (t) => {
+tap.test('fail without factory.create', (t) => {
   const factory = {
-    name: "test-config",
+    name: 'test-config',
     destroy: () => {},
     validate: () => {},
     max: 1,
@@ -28,13 +28,13 @@ tap.test("fail without factory.create", (t) => {
 
   t.throws(() => {
     new Pool(factory);
-  }, "create function is required");
+  }, 'create function is required');
   t.end();
 });
 
-tap.test("fail without factory.destroy", (t) => {
+tap.test('fail without factory.destroy', (t) => {
   const factory = {
-    name: "test-config",
+    name: 'test-config',
     create: () => {},
     validate: () => {},
     max: 1,
@@ -43,13 +43,13 @@ tap.test("fail without factory.destroy", (t) => {
 
   t.throws(() => {
     new Pool(factory);
-  }, "destroy function is required");
+  }, 'destroy function is required');
   t.end();
 });
 
-tap.test("fail without factory.validate", (t) => {
+tap.test('fail without factory.validate', (t) => {
   const factory = {
-    name: "test-config",
+    name: 'test-config',
     create: () => {},
     destroy: () => {},
     max: 1,
@@ -58,6 +58,6 @@ tap.test("fail without factory.validate", (t) => {
 
   t.throws(() => {
     new Pool(factory);
-  }, "validate function is required");
+  }, 'validate function is required');
   t.end();
 });

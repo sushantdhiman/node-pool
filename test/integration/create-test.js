@@ -1,12 +1,12 @@
-const tap = require("tap");
-const Pool = require("../..").Pool;
-const { delay } = require("../utils");
+const tap = require('tap');
+const Pool = require('../..').Pool;
+const { delay } = require('../utils');
 
-tap.test("factory.create", (t) => {
-  tap.test("handle creation errors", (t) => {
+tap.test('factory.create', (t) => {
+  tap.test('handle creation errors', (t) => {
     let created = 0;
     const pool = new Pool({
-      name: "test-create-errors",
+      name: 'test-create-errors',
       create: function () {
         if (created++ < 5) {
           return Promise.reject(new Error(`Error ${created} occurred.`));
@@ -38,14 +38,14 @@ tap.test("factory.create", (t) => {
       .catch(t.threw);
   });
 
-  tap.test("handle creation errors from delayed creates", (t) => {
+  tap.test('handle creation errors from delayed creates', (t) => {
     let created = 0;
     const pool = new Pool({
-      name: "test-async-create-errors",
+      name: 'test-async-create-errors',
       create: function () {
         if (created++ < 5) {
           return delay(10).then(() =>
-            Promise.reject(new Error("Error occurred."))
+            Promise.reject(new Error('Error occurred.'))
           );
         } else {
           return delay(10).then(() => Promise.resolve({ id: created }));

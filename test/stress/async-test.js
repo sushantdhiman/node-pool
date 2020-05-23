@@ -1,12 +1,12 @@
-const tap = require("tap");
-const Pool = require("../..").Pool;
-const { delay } = require("../utils");
+const tap = require('tap');
+const Pool = require('../..').Pool;
+const { delay } = require('../utils');
 
-tap.test("async multiple calls", (t) => {
+tap.test('async multiple calls', (t) => {
   let createCount = 0;
 
   const pool = new Pool({
-    name: "test",
+    name: 'test',
     create: function () {
       return delay(50).then(() => {
         createCount += 1;
@@ -39,7 +39,7 @@ tap.test("async multiple calls", (t) => {
       t.equal(
         borrowedObjects.indexOf(obj),
         -1,
-        "acquire returned an object is currently acquired"
+        'acquire returned an object is currently acquired'
       );
       borrowedObjects.push(obj);
 
