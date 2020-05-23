@@ -1,12 +1,12 @@
-const tap = require("tap");
-const { Pool, TimeoutError } = require("../..");
-const { ResourceFactory, delay } = require("../utils");
+const tap = require('tap');
+const { Pool, TimeoutError } = require('../..');
+const { ResourceFactory, delay } = require('../utils');
 
-tap.test("pool expands only to max limit", (t) => {
+tap.test('pool expands only to max limit', (t) => {
   const resourceFactory = new ResourceFactory();
 
   const factory = {
-    name: "test1",
+    name: 'test1',
     create: resourceFactory.create.bind(resourceFactory),
     destroy: resourceFactory.destroy.bind(resourceFactory),
     validate: resourceFactory.validate.bind(resourceFactory),
@@ -23,7 +23,7 @@ tap.test("pool expands only to max limit", (t) => {
     .then((obj) => {
       return pool.acquire().catch((e) => {
         t.ok(e instanceof TimeoutError);
-        t.ok(e.message === "Operation timeout");
+        t.ok(e.message === 'Operation timeout');
         pool.release(obj);
         t.end();
       });
@@ -31,11 +31,11 @@ tap.test("pool expands only to max limit", (t) => {
     .catch(t.threw);
 });
 
-tap.test("pool uses LIFO", (t) => {
+tap.test('pool uses LIFO', (t) => {
   const resourceFactory = new ResourceFactory();
 
   const factory = {
-    name: "test1",
+    name: 'test1',
     create: resourceFactory.create.bind(resourceFactory),
     destroy: resourceFactory.destroy.bind(resourceFactory),
     validate: resourceFactory.validate.bind(resourceFactory),
@@ -60,11 +60,11 @@ tap.test("pool uses LIFO", (t) => {
   });
 });
 
-tap.test("removes correct object on reap", (t) => {
+tap.test('removes correct object on reap', (t) => {
   const resourceFactory = new ResourceFactory();
 
   const pool = new Pool({
-    name: "test3",
+    name: 'test3',
     create: resourceFactory.create.bind(resourceFactory),
     destroy: resourceFactory.destroy.bind(resourceFactory),
     validate: resourceFactory.validate.bind(resourceFactory),
@@ -91,14 +91,14 @@ tap.test("removes correct object on reap", (t) => {
   }, 100);
 });
 
-tap.test("drains", (t) => {
+tap.test('drains', (t) => {
   const count = 5;
   let acquired = 0;
 
   const resourceFactory = new ResourceFactory();
 
   const pool = new Pool({
-    name: "test4",
+    name: 'test4',
     create: resourceFactory.create.bind(resourceFactory),
     destroy: resourceFactory.destroy.bind(resourceFactory),
     validate: resourceFactory.validate.bind(resourceFactory),
@@ -111,7 +111,7 @@ tap.test("drains", (t) => {
   for (let i = 0; i < count; i++) {
     pool.acquire().then((client) => {
       acquired += 1;
-      t.equal(typeof client.id, "number");
+      t.equal(typeof client.id, 'number');
       setTimeout(() => {
         pool.destroy(client);
       }, 250);
@@ -131,20 +131,20 @@ tap.test("drains", (t) => {
       t.equal(pool.using, 0);
 
       return pool.acquire().catch((e) => {
-        t.ok(e.message === "pool is draining and cannot accept work");
+        t.ok(e.message === 'pool is draining and cannot accept work');
         t.end();
       });
     })
     .catch(t.threw);
 });
 
-tap.test("logging", (t) => {
+tap.test('logging', (t) => {
   const logLevels = { verbose: 0, info: 1, warn: 2, error: 3 };
   const logMessages = { verbose: [], info: [], warn: [], error: [] };
   const resourceFactory = new ResourceFactory();
 
   const factory = {
-    name: "test12",
+    name: 'test12',
     create: resourceFactory.create.bind(resourceFactory),
     destroy: () => {},
     validate: () => {},
@@ -162,7 +162,7 @@ tap.test("logging", (t) => {
 
   const pool = new Pool(factory);
   const pool2 = new Pool({
-    name: "testNoLog",
+    name: 'testNoLog',
     create: resourceFactory.create.bind(resourceFactory),
     destroy: () => {},
     validate: () => {},
@@ -171,25 +171,25 @@ tap.test("logging", (t) => {
     idleTimeoutMillis: 100,
   });
 
-  t.equal(pool2.name, "testNoLog");
+  t.equal(pool2.name, 'testNoLog');
 
   pool
     .acquire()
     .then(() => {
       t.equal(
         logMessages.verbose[0],
-        "createResource() - creating obj - count=1 min=0 max=2"
+        'createResource() - creating obj - count=1 min=0 max=2'
       );
-      t.equal(logMessages.info[0], "dispense() clients=1 available=0");
+      t.equal(logMessages.info[0], 'dispense() clients=1 available=0');
       t.end();
     })
     .catch(t.threw);
 });
 
-tap.test("removes from available objects on destroy", (t) => {
+tap.test('removes from available objects on destroy', (t) => {
   let destroyCalled = false;
   const factory = {
-    name: "test13",
+    name: 'test13',
     create: function () {
       return Promise.resolve({});
     },
@@ -219,11 +219,11 @@ tap.test("removes from available objects on destroy", (t) => {
 });
 
 tap.test(
-  "decrement _count only when resource is actually removed from queues",
+  'decrement _count only when resource is actually removed from queues',
   (t) => {
     let destroyCalled = 0;
     const factory = {
-      name: "test14",
+      name: 'test14',
       create: function () {
         return Promise.resolve({});
       },
@@ -273,14 +273,14 @@ tap.test(
   }
 );
 
-tap.test("removes from available objects on validation failure", (t) => {
+tap.test('removes from available objects on validation failure', (t) => {
   let destroyCalled = 0;
   let validateCalled = 0;
   let destroyedClient = null;
   let count = 0;
 
   const factory = {
-    name: "test15",
+    name: 'test15',
     create: () => {
       return Promise.resolve({ count: count++ });
     },
@@ -322,16 +322,16 @@ tap.test("removes from available objects on validation failure", (t) => {
     .catch(t.threw);
 });
 
-tap.test("acquire resolves after some failures", (t) => {
+tap.test('acquire resolves after some failures', (t) => {
   let rejected = 0;
 
   const factory = {
-    name: "test17",
+    name: 'test17',
     create: function () {
       rejected++;
 
       if (rejected <= 2) {
-        return Promise.reject(new Error("Create error"));
+        return Promise.reject(new Error('Create error'));
       } else {
         return Promise.resolve({});
       }
@@ -345,8 +345,8 @@ tap.test("acquire resolves after some failures", (t) => {
   const pool = new Pool(factory);
 
   Promise.resolve()
-    .then(() => t.rejects(pool.acquire(), new Error("Create error")))
-    .then(() => t.rejects(pool.acquire(), new Error("Create error")))
+    .then(() => t.rejects(pool.acquire(), new Error('Create error')))
+    .then(() => t.rejects(pool.acquire(), new Error('Create error')))
     .then(() => pool.acquire())
     .then(() => {
       t.equal(pool.available, 0);
@@ -355,11 +355,11 @@ tap.test("acquire resolves after some failures", (t) => {
     .catch(t.threw);
 });
 
-tap.test("returns only valid object to the pool", (t) => {
+tap.test('returns only valid object to the pool', (t) => {
   const pool = new Pool({
-    name: "test18",
+    name: 'test18',
     create: function () {
-      return delay(1).then(() => ({ id: "validId" }));
+      return delay(1).then(() => ({ id: 'validId' }));
     },
     destroy: () => {},
     validate: () => {},
@@ -390,11 +390,11 @@ tap.test("returns only valid object to the pool", (t) => {
 });
 
 tap.test(
-  "destroyAllNow should call factory.destroy for resources being removed",
+  'destroyAllNow should call factory.destroy for resources being removed',
   (t) => {
     let destroyCalled = 0;
     const factory = {
-      name: "test19",
+      name: 'test19',
       create: function () {
         return Promise.resolve({});
       },
@@ -441,11 +441,11 @@ tap.test(
   }
 );
 
-tap.test("pool destroys a resource when maxUses is reached", (t) => {
+tap.test('pool destroys a resource when maxUses is reached', (t) => {
   const resourceFactory = new ResourceFactory();
 
   const factory = {
-    name: "test20",
+    name: 'test20',
     create: resourceFactory.create.bind(resourceFactory),
     destroy: resourceFactory.destroy.bind(resourceFactory),
     validate: resourceFactory.validate.bind(resourceFactory),
@@ -479,12 +479,12 @@ tap.test("pool destroys a resource when maxUses is reached", (t) => {
   });
 });
 
-tap.test("pool does not leak expired resources to pending requests", (t) => {
+tap.test('pool does not leak expired resources to pending requests', (t) => {
   // Built to test a bug fix introduced in https://github.com/sequelize/sequelize-pool/pull/18
   const resourceFactory = new ResourceFactory();
 
   const factory = {
-    name: "test21",
+    name: 'test21',
     create: resourceFactory.create.bind(resourceFactory),
     destroy: resourceFactory.destroy.bind(resourceFactory),
     validate: resourceFactory.validate.bind(resourceFactory),

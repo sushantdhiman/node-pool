@@ -1,10 +1,10 @@
-const tap = require("tap");
-const Pool = require("../..").Pool;
+const tap = require('tap');
+const Pool = require('../..').Pool;
 const random = () => Math.floor(Math.random() * 1000);
 
-tap.test("pool.name", (t) => {
+tap.test('pool.name', (t) => {
   const pool = new Pool({
-    name: "test-pool.name",
+    name: 'test-pool.name',
     create: () => Promise.resolve({ id: random() }),
     destroy: () => {},
     validate: () => true,
@@ -12,13 +12,13 @@ tap.test("pool.name", (t) => {
     min: 0,
   });
 
-  t.ok(pool.name === "test-pool.name");
+  t.ok(pool.name === 'test-pool.name');
   t.end();
 });
 
-tap.test("pool.size", (t) => {
+tap.test('pool.size', (t) => {
   const pool = new Pool({
-    name: "test-pool.size",
+    name: 'test-pool.size',
     create: () => Promise.resolve({ id: random() }),
     destroy: () => {},
     validate: () => true,
@@ -51,9 +51,9 @@ tap.test("pool.size", (t) => {
     .catch(t.threw);
 });
 
-tap.test("pool.available", (t) => {
+tap.test('pool.available', (t) => {
   const pool = new Pool({
-    name: "test-pool.available",
+    name: 'test-pool.available',
     create: () => Promise.resolve({ id: random() }),
     destroy: () => {},
     validate: () => true,

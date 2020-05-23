@@ -16,7 +16,7 @@ npm i sequelize-pool
 
 ## API Documentation
 
-You can find full API documentation in [API.md](https://github.com/sequelize/sequelize-pool/blob/master/API.md)
+You can find full API documentation in [docs/README.md](docs/README.md)
 
 ## Example
 
@@ -24,18 +24,18 @@ You can find full API documentation in [API.md](https://github.com/sequelize/seq
 
 ```js
 // Create a MySQL connection pool
-var Pool = require("sequelize-pool").Pool;
-var mysql2 = require("mysql2/promise");
+var Pool = require('sequelize-pool').Pool;
+var mysql2 = require('mysql2/promise');
 
 var pool = new Pool({
-  name: "mysql",
+  name: 'mysql',
   create: async () => {
     // create a new connection
     // return as a promise
     return mysql2.createConnection({
-      user: "scott",
-      password: "tiger",
-      database: "mydb",
+      user: 'scott',
+      password: 'tiger',
+      database: 'mydb',
     });
   },
   destroy: (connection) => {
@@ -60,7 +60,7 @@ var pool = new Pool({
   // specified `factory.acquireTimeoutMillis` time.
   const connection = await pool.acquire();
 
-  const result = connection.query("select * from foo");
+  const result = connection.query('select * from foo');
 
   // return connection back to pool so it can be reused
   pool.release(connection);
