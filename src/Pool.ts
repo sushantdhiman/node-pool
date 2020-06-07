@@ -442,6 +442,15 @@ export class Pool<RawResource> {
     this._pendingAcquires.push(deferred);
     this._dispense();
 
+    let i, diff;
+    if (this.size < this.minSize) {
+      diff = this.minSize - this.size;
+      for (i = 0; i < diff; i++) {
+        this._pendingAcquires.push(deferred);
+        this._dispense();
+      }
+    }
+
     return deferred.promise();
   }
 
