@@ -508,7 +508,7 @@ export class Pool<RawResource> {
    *
    * This should be called within an acquire() block as an alternative to release().
    */
-  destroy(resource: RawResource): void {
+  destroy(resource: RawResource): Promise<void> {
     const available = this._availableObjects.length;
     const using = this._inUseObjects.length;
 
@@ -525,14 +525,15 @@ export class Pool<RawResource> {
       using === this._inUseObjects.length
     ) {
       this._ensureMinimum();
-      return;
+      return Promise.resolve();
     }
 
     this._count -= 1;
     if (this._count < 0) this._count = 0;
 
-    this._factory.destroy(resource);
-    this._ensureMinimum();
+    return Promise.resolve(this._factory.destroy(resource)).then(() => {
+      this._ensureMinimum();
+    });
   }
 
   /**
@@ -586,29 +587,13 @@ export class Pool<RawResource> {
   destroyAllNow(): Promise<void> {
     this._log('force destroying all objects', 'info');
 
-    const willDie = this._availableObjects.slice();
-    const todo = willDie.length;
-
     this._removeIdleScheduled = false;
     clearTimeout(this._removeIdleTimer);
 
-    // prettier-ignore
-    return new Promise/*:: <void> */((resolve) => {
-      if (todo === 0) {
-        return resolve();
-      }
-
-      let resource;
-      let done = 0;
-
-      while ((resource = willDie.shift())) {
-        this.destroy(resource.resource);
-        ++done;
-
-        if (done === todo && resolve) {
-          return resolve();
-        }
-      }
-    });
+    return Promise.all(
+      this._availableObjects.map((resource) => {
+        return this.destroy(resource.resource);
+      })
+    ).then(() => {});
   }
 }
