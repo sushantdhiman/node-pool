@@ -594,6 +594,6 @@ export class Pool<RawResource> {
       this._availableObjects.map((resource) => {
         return this.destroy(resource.resource);
       })
-    ).then(() => {});
+    ).then(() => {}); //eslint-disable-line @typescript-eslint/no-empty-function
   }
 }
