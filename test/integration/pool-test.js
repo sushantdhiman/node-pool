@@ -218,6 +218,41 @@ tap.test('removes from available objects on destroy', (t) => {
     });
 });
 
+tap.test('waits on destroy promise on destroy', (t) => {
+  let destroyResolved = false;
+  const factory = {
+    name: 'test13',
+    create: function () {
+      return Promise.resolve({});
+    },
+    destroy: function () {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          destroyResolved = true;
+          resolve();
+        }, 100);
+      });
+    },
+    validate: () => {},
+    max: 2,
+    min: 0,
+    idleTimeoutMillis: 100,
+  };
+
+  const pool = new Pool(factory);
+
+  pool
+    .acquire()
+    .then((obj) => pool.destroy(obj))
+    .then(() => {
+      t.equal(destroyResolved, true);
+      t.equal(pool.available, 0);
+      t.equal(pool.using, 0);
+      t.equal(pool.waiting, 0);
+      t.end();
+    });
+});
+
 tap.test(
   'decrement _count only when resource is actually removed from queues',
   (t) => {
@@ -438,6 +473,59 @@ tap.test(
         t.end();
       })
       .catch(t.threw);
+  }
+);
+
+tap.test(
+  'destroyAllNow should destroy all and throw an AggregateError on error',
+  (t) => {
+    const factory = {
+      name: 'test19',
+      create: function () {
+        return Promise.resolve({});
+      },
+      destroy: function () {
+        throw new Error('Error');
+      },
+      validate: () => {},
+      max: 2,
+      min: 0,
+      idleTimeoutMillis: 100,
+    };
+
+    const pool = new Pool(factory);
+
+    Promise.all([pool.acquire(), pool.acquire()])
+      .then(([resource1, resource2]) => {
+        t.equal(pool.available, 0);
+        t.equal(pool.using, 2);
+        t.equal(pool.waiting, 0);
+        t.equal(pool.size, 2);
+
+        pool.release(resource1);
+        pool.release(resource2);
+
+        t.equal(pool.available, 2);
+        t.equal(pool.using, 0);
+        t.equal(pool.waiting, 0);
+        t.equal(pool.size, 2);
+
+        return pool.destroyAllNow();
+      })
+      .then(() => {
+        t.fail('destroyAllNow did not throw an error');
+      })
+      .catch((error) => {
+        t.equal(pool.available, 0);
+        t.equal(pool.using, 0);
+        t.equal(pool.waiting, 0);
+        t.equal(pool.size, 0);
+
+        t.equal(error.name, 'AggregateError');
+        t.equal(error.errors.length, 2);
+
+        t.end();
+      });
   }
 );
 

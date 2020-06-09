@@ -1,4 +1,5 @@
 import { Deferred } from './Deferred';
+import { AggregateError } from './AggregateError';
 
 type LogLevel = 'verbose' | 'info' | 'error';
 type FactoryLogger = (message: string, level: LogLevel) => void;
@@ -508,7 +509,7 @@ export class Pool<RawResource> {
    *
    * This should be called within an acquire() block as an alternative to release().
    */
-  destroy(resource: RawResource): void {
+  async destroy(resource: RawResource): Promise<void> {
     const available = this._availableObjects.length;
     const using = this._inUseObjects.length;
 
@@ -531,8 +532,11 @@ export class Pool<RawResource> {
     this._count -= 1;
     if (this._count < 0) this._count = 0;
 
-    this._factory.destroy(resource);
-    this._ensureMinimum();
+    try {
+      await this._factory.destroy(resource);
+    } finally {
+      this._ensureMinimum();
+    }
   }
 
   /**
@@ -583,32 +587,27 @@ export class Pool<RawResource> {
    * specified factory.min value.  If this is not desired, set factory.min
    * to zero before calling destroyAllNow()
    */
-  destroyAllNow(): Promise<void> {
+  async destroyAllNow(): Promise<void> {
     this._log('force destroying all objects', 'info');
-
-    const willDie = this._availableObjects.slice();
-    const todo = willDie.length;
 
     this._removeIdleScheduled = false;
     clearTimeout(this._removeIdleTimer);
 
-    // prettier-ignore
-    return new Promise/*:: <void> */((resolve) => {
-      if (todo === 0) {
-        return resolve();
+    const resources = this._availableObjects.map(
+      (resource) => resource.resource
+    );
+    const errors = [];
+    for (const resource of resources) {
+      try {
+        await this.destroy(resource);
+      } catch (ex) {
+        this._log('Error destroying resource: ' + ex.stack, 'error');
+        errors.push(ex);
       }
+    }
 
-      let resource;
-      let done = 0;
-
-      while ((resource = willDie.shift())) {
-        this.destroy(resource.resource);
-        ++done;
-
-        if (done === todo && resolve) {
-          return resolve();
-        }
-      }
-    });
+    if (errors.length > 0) {
+      throw new AggregateError(errors);
+    }
   }
 }
