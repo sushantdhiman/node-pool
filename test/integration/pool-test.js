@@ -476,6 +476,59 @@ tap.test(
   }
 );
 
+tap.test(
+  'destroyAllNow should destroy all and throw an AggregateError on error',
+  (t) => {
+    const factory = {
+      name: 'test19',
+      create: function () {
+        return Promise.resolve({});
+      },
+      destroy: function () {
+        throw new Error('Error');
+      },
+      validate: () => {},
+      max: 2,
+      min: 0,
+      idleTimeoutMillis: 100,
+    };
+
+    const pool = new Pool(factory);
+
+    Promise.all([pool.acquire(), pool.acquire()])
+      .then(([resource1, resource2]) => {
+        t.equal(pool.available, 0);
+        t.equal(pool.using, 2);
+        t.equal(pool.waiting, 0);
+        t.equal(pool.size, 2);
+
+        pool.release(resource1);
+        pool.release(resource2);
+
+        t.equal(pool.available, 2);
+        t.equal(pool.using, 0);
+        t.equal(pool.waiting, 0);
+        t.equal(pool.size, 2);
+
+        return pool.destroyAllNow();
+      })
+      .then(() => {
+        t.fail('destroyAllNow did not throw an error');
+      })
+      .catch((error) => {
+        t.equal(pool.available, 0);
+        t.equal(pool.using, 0);
+        t.equal(pool.waiting, 0);
+        t.equal(pool.size, 0);
+
+        t.equal(error.name, 'AggregateError');
+        t.equal(error.errors.length, 2);
+
+        t.end();
+      });
+  }
+);
+
 tap.test('pool destroys a resource when maxUses is reached', (t) => {
   const resourceFactory = new ResourceFactory();
 
