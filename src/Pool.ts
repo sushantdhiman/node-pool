@@ -1,4 +1,5 @@
 import { Deferred } from './Deferred';
+import { AggregateError } from './AggregateError';
 
 type LogLevel = 'verbose' | 'info' | 'error';
 type FactoryLogger = (message: string, level: LogLevel) => void;
@@ -508,7 +509,7 @@ export class Pool<RawResource> {
    *
    * This should be called within an acquire() block as an alternative to release().
    */
-  destroy(resource: RawResource): Promise<void> {
+  async destroy(resource: RawResource): Promise<void> {
     const available = this._availableObjects.length;
     const using = this._inUseObjects.length;
 
@@ -525,15 +526,17 @@ export class Pool<RawResource> {
       using === this._inUseObjects.length
     ) {
       this._ensureMinimum();
-      return Promise.resolve();
+      return;
     }
 
     this._count -= 1;
     if (this._count < 0) this._count = 0;
 
-    return Promise.resolve(this._factory.destroy(resource)).then(() => {
+    try {
+      await this._factory.destroy(resource);
+    } finally {
       this._ensureMinimum();
-    });
+    }
   }
 
   /**
@@ -584,16 +587,27 @@ export class Pool<RawResource> {
    * specified factory.min value.  If this is not desired, set factory.min
    * to zero before calling destroyAllNow()
    */
-  destroyAllNow(): Promise<void> {
+  async destroyAllNow(): Promise<void> {
     this._log('force destroying all objects', 'info');
 
     this._removeIdleScheduled = false;
     clearTimeout(this._removeIdleTimer);
 
-    return Promise.all(
-      this._availableObjects.map((resource) => {
-        return this.destroy(resource.resource);
-      })
-    ).then(() => {}); //eslint-disable-line @typescript-eslint/no-empty-function
+    const resources = this._availableObjects.map(
+      (resource) => resource.resource
+    );
+    const errors = [];
+    for (const resource of resources) {
+      try {
+        await this.destroy(resource);
+      } catch (ex) {
+        this._log('Error destroying resource: ' + ex.stack, 'error');
+        errors.push(ex);
+      }
+    }
+
+    if (errors.length > 0) {
+      throw new AggregateError(errors);
+    }
   }
 }
