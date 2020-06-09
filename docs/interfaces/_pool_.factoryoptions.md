@@ -2,7 +2,7 @@
 
 # Interface: FactoryOptions <**T**>
 
-Factory to be used for generating and destroying the items.
+Factory options. Used for generating/destroying/validating resources & other configuration
 
 ## Type parameters
 
@@ -34,8 +34,6 @@ Factory to be used for generating and destroying the items.
 
 • **acquireTimeoutMillis**? : *number*
 
-Defined in src/Pool.ts:84
-
 Delay in milliseconds after which pending acquire request in the pool will be rejected.
 Pending acquires are acquire calls which are yet to receive an response from factory.create
 
@@ -46,8 +44,6 @@ ___
 ###  create
 
 • **create**: *function*
-
-Defined in src/Pool.ts:29
 
 Should create the item to be acquired
 
@@ -61,14 +57,12 @@ ___
 
 • **destroy**: *function*
 
-Defined in src/Pool.ts:35
-
 Should gently close any resources that the item is using.
-Called before the items is destroyed.
+Called when resource is destroyed.
 
 #### Type declaration:
 
-▸ (`resource`: T): *void*
+▸ (`resource`: T): *void | Promise‹void›*
 
 **Parameters:**
 
@@ -82,8 +76,6 @@ ___
 
 • **idleTimeoutMillis**? : *number*
 
-Defined in src/Pool.ts:76
-
 Delay in milliseconds after which available resources in the pool will be destroyed.
 This does not affects pending acquire requests.
 
@@ -94,8 +86,6 @@ ___
 ### `Optional` log
 
 • **log**? : *FactoryLogger | boolean*
-
-Defined in src/Pool.ts:99
 
 Whether the pool should log activity. If function is specified,
 that will be used instead. The function expects the arguments msg, loglevel
@@ -108,8 +98,6 @@ ___
 
 • **max**: *number*
 
-Defined in src/Pool.ts:48
-
 Maximum number of items that can exist at the same time.
 Any further acquire requests will be pushed to the waiting list.
 
@@ -118,8 +106,6 @@ ___
 ### `Optional` maxUses
 
 • **maxUses**? : *number*
-
-Defined in src/Pool.ts:68
 
 The number of times an item is to be used before it is destroyed
 no matter whether it is still healthy.  A value of 0 indicates the
@@ -136,8 +122,6 @@ ___
 
 • **min**: *number*
 
-Defined in src/Pool.ts:56
-
 Minimum number of items in pool (including in-use).
 When the pool is created, or a resource destroyed, this minimum will
 be checked. If the pool resource count is below the minimum, a new
@@ -149,8 +133,6 @@ ___
 
 • **name**? : *string*
 
-Defined in src/Pool.ts:24
-
 Name of the factory. Serves only logging purposes.
 
 ___
@@ -158,8 +140,6 @@ ___
 ### `Optional` reapIntervalMillis
 
 • **reapIntervalMillis**? : *number*
-
-Defined in src/Pool.ts:91
 
 Clean up is scheduled in every `factory.reapIntervalMillis` milliseconds.
 
@@ -170,8 +150,6 @@ ___
 ###  validate
 
 • **validate**: *function*
-
-Defined in src/Pool.ts:42
 
 Should return true if connection is still valid and false
 If it should be removed from pool. Called before item is

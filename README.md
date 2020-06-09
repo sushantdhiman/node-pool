@@ -39,9 +39,8 @@ var pool = new Pool({
     });
   },
   destroy: (connection) => {
-    // this function should destroy connection.
-    // pool does not wait for promise (if returned) by this method.
-    // connection is removed from pool in sync and this method is called.
+    // this function should destroy connection. Pool waits for promise (if returned).
+    // connection is removed from pool and this method is called and awaited for.
     connection.end();
   },
   validate: (connection) => connection.closed !== true,
@@ -71,16 +70,16 @@ var pool = new Pool({
 
 If you are shutting down a long-lived process, you may notice
 that node fails to exit for 30 seconds or so. This is a side
-effect of the idleTimeoutMillis behaviour -- the pool has a
-setTimeout() call registered that is in the event loop queue, so
+effect of the `idleTimeoutMillis` behaviour -- the pool has a
+`setTimeout()` call registered that is in the event loop queue, so
 node won't terminate until all resources have timed out, and the pool
 stops trying to manage them.
 
-This behaviour will be more problematic when you set factory.min > 0,
-as the pool will never become empty, and the setTimeout calls will
+This behavior will be more problematic when you set `factory.min > 0`,
+as the pool will never become empty, and the `setTimeout` calls will
 never end.
 
-In these cases, use the pool.drain() function. This sets the pool
+In these cases, use the `pool.drain()` function. This sets the pool
 into a "draining" state which will gracefully wait until all
 idle resources have timed out. For example, you can call:
 
@@ -139,6 +138,12 @@ Of course, you'll want to test scenarios for your own application since every ap
 We use [Node Tap](https://node-tap.org/) for testing.
 
 ```sh
-$ npm install
-$ npm test
+npm install
+npm test
+```
+
+Documentation is generated with `typedoc`
+
+```sh
+npm run docs
 ```

@@ -6,7 +6,7 @@ Error which is thrown by pool when acquire request timeouts
 
 ## Hierarchy
 
-* [Error](_timeouterror_.timeouterror.md#static-error)
+* [Error](_aggregateerror_.aggregateerror.md#static-error)
 
   ↳ **TimeoutError**
 
@@ -25,9 +25,7 @@ Error which is thrown by pool when acquire request timeouts
 
 • **message**: *string*
 
-*Inherited from [TimeoutError](_timeouterror_.timeouterror.md).[message](_timeouterror_.timeouterror.md#message)*
-
-Defined in node_modules/typescript/lib/lib.es5.d.ts:974
+*Inherited from [AggregateError](_aggregateerror_.aggregateerror.md).[message](_aggregateerror_.aggregateerror.md#message)*
 
 ___
 
@@ -35,9 +33,7 @@ ___
 
 • **name**: *string*
 
-*Inherited from [TimeoutError](_timeouterror_.timeouterror.md).[name](_timeouterror_.timeouterror.md#name)*
-
-Defined in node_modules/typescript/lib/lib.es5.d.ts:973
+*Inherited from [AggregateError](_aggregateerror_.aggregateerror.md).[name](_aggregateerror_.aggregateerror.md#name)*
 
 ___
 
@@ -45,14 +41,10 @@ ___
 
 • **stack**? : *string*
 
-*Inherited from [TimeoutError](_timeouterror_.timeouterror.md).[stack](_timeouterror_.timeouterror.md#optional-stack)*
-
-Defined in node_modules/typescript/lib/lib.es5.d.ts:975
+*Inherited from [AggregateError](_aggregateerror_.aggregateerror.md).[stack](_aggregateerror_.aggregateerror.md#optional-stack)*
 
 ___
 
 ### `Static` Error
 
 ▪ **Error**: *ErrorConstructor*
-
-Defined in node_modules/typescript/lib/lib.es5.d.ts:984

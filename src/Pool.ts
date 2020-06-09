@@ -16,7 +16,7 @@ type InUseObject<T> = {
 };
 
 /**
- * Factory to be used for generating and destroying the items.
+ * Factory options. Used for generating/destroying/validating resources & other configuration
  */
 export interface FactoryOptions<T> {
   /**
@@ -31,9 +31,9 @@ export interface FactoryOptions<T> {
 
   /**
    * Should gently close any resources that the item is using.
-   * Called before the items is destroyed.
+   * Called when resource is destroyed.
    */
-  destroy: (resource: T) => void;
+  destroy: (resource: T) => void | Promise<void>;
 
   /**
    * Should return true if connection is still valid and false
@@ -289,7 +289,8 @@ export class Pool<RawResource> {
   }
 
   /**
-   * Schedule removal of idle items in the pool. More schedules cannot run concurrently.
+   * Schedule removal of idle items in the pool.
+   * More schedules cannot run concurrently.
    */
   protected _scheduleRemoveIdle(): void {
     if (!this._removeIdleScheduled) {
@@ -423,6 +424,7 @@ export class Pool<RawResource> {
    * It will be rejected with timeout error if `factory.create` didn't respond
    * back within specified `acquireTimeoutMillis`
    *
+   * **Throws:** {@link TimeoutError}
    */
   acquire(): Promise<RawResource> {
     if (this._draining) {
@@ -447,7 +449,8 @@ export class Pool<RawResource> {
   }
 
   /**
-   * Return the resource to the pool, in case it is no longer required.
+   * Return the resource to the pool, add it to the available objects.
+   * Resource will be available for use by pending or future `acquire()` calls
    */
   release(resource: RawResource): void {
     // check to see if this object has already been released
@@ -504,10 +507,9 @@ export class Pool<RawResource> {
   }
 
   /**
-   * Request the client to be destroyed. The factory's destroy handler
-   * will also be called.
+   * Removes a resource from pool. The factory's destroy handler will be called with given resource.
    *
-   * This should be called within an acquire() block as an alternative to release().
+   * This is an alternative to `release()`
    */
   async destroy(resource: RawResource): Promise<void> {
     const available = this._availableObjects.length;
@@ -540,7 +542,7 @@ export class Pool<RawResource> {
   }
 
   /**
-   * Disallow any new requests and let the request backlog dissipate.
+   * Disallow any new acquire requests and let the request backlog dissipate.
    */
   drain(): Promise<void> {
     this._log('draining', 'info');
@@ -571,21 +573,20 @@ export class Pool<RawResource> {
       callback();
     };
 
-    // No error handling needed here.
-    // prettier-ignore
-    return new Promise/*:: <void> */((resolve) => check(resolve)
-    );
+    return new Promise((resolve) => check(resolve));
   }
 
   /**
-   * Forcibly destroys all clients regardless of timeout.  Intended to be
-   * invoked as part of a drain.  Does not prevent the creation of new
+   * Forcibly destroys all clients regardless of timeout. Intended to be
+   * invoked as part of a drain. Does not prevent the creation of new
    * clients as a result of subsequent calls to acquire.
    *
-   * Note that if factory.min > 0, the pool will destroy all idle resources
+   * Note that if `factory.min > 0`, the pool will destroy all idle resources
    * in the pool, but replace them with newly created resources up to the
-   * specified factory.min value.  If this is not desired, set factory.min
-   * to zero before calling destroyAllNow()
+   * specified `factory.min` value.  If this is not desired, set `factory.min`
+   * to zero before calling `destroyAllNow()`
+   *
+   * **Throws:** {@link AggregateError}
    */
   async destroyAllNow(): Promise<void> {
     this._log('force destroying all objects', 'info');

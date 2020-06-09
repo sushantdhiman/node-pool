@@ -20,7 +20,7 @@
     "excludePrivate": true,
     "excludeProtected": true,
     "excludeNotExported": true,
-    "disableSource": true,
+    "disableSources": true,
     "readme": "none"
   },
   "include": ["src/**/*"],

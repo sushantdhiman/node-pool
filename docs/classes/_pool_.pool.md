@@ -40,8 +40,6 @@
 
 \+ **new Pool**(`factory`: [FactoryOptions](../interfaces/_pool_.factoryoptions.md)‹RawResource›): *[Pool](_pool_.pool.md)*
 
-Defined in src/Pool.ts:120
-
 Generate an object pool with a specified `factory`.
 
 **Parameters:**
@@ -58,8 +56,6 @@ Name | Type |
 
 • **get available**(): *number*
 
-Defined in src/Pool.ts:203
-
 Number of unused resources in the pool
 
 **Returns:** *number*
@@ -69,8 +65,6 @@ ___
 ###  maxSize
 
 • **get maxSize**(): *number*
-
-Defined in src/Pool.ts:224
 
 Maximum number of resources allowed by pool
 
@@ -82,8 +76,6 @@ ___
 
 • **get minSize**(): *number*
 
-Defined in src/Pool.ts:231
-
 Minimum number of resources allowed by pool
 
 **Returns:** *number*
@@ -94,8 +86,6 @@ ___
 
 • **get name**(): *string*
 
-Defined in src/Pool.ts:196
-
 factory.name for this pool
 
 **Returns:** *string*
@@ -105,8 +95,6 @@ ___
 ###  size
 
 • **get size**(): *number*
-
-Defined in src/Pool.ts:189
 
 Number of resources in the pool regardless of
 whether they are free or in use
@@ -119,8 +107,6 @@ ___
 
 • **get using**(): *number*
 
-Defined in src/Pool.ts:210
-
 Number of in use resources
 
 **Returns:** *number*
@@ -130,8 +116,6 @@ ___
 ###  waiting
 
 • **get waiting**(): *number*
-
-Defined in src/Pool.ts:217
 
 Number of callers waiting to acquire a resource
 
@@ -143,12 +127,12 @@ Number of callers waiting to acquire a resource
 
 ▸ **acquire**(): *Promise‹RawResource›*
 
-Defined in src/Pool.ts:426
-
 Requests a new resource. This will call factory.create to request new resource.
 
 It will be rejected with timeout error if `factory.create` didn't respond
 back within specified `acquireTimeoutMillis`
+
+**Throws:** [TimeoutError](_timeouterror_.timeouterror.md)
 
 **Returns:** *Promise‹RawResource›*
 
@@ -156,14 +140,11 @@ ___
 
 ###  destroy
 
-▸ **destroy**(`resource`: RawResource): *void*
+▸ **destroy**(`resource`: RawResource): *Promise‹void›*
 
-Defined in src/Pool.ts:511
+Removes a resource from pool. The factory's destroy handler will be called with given resource.
 
-Request the client to be destroyed. The factory's destroy handler
-will also be called.
-
-This should be called within an acquire() block as an alternative to release().
+This is an alternative to `release()`
 
 **Parameters:**
 
@@ -171,7 +152,7 @@ Name | Type |
 ------ | ------ |
 `resource` | RawResource |
 
-**Returns:** *void*
+**Returns:** *Promise‹void›*
 
 ___
 
@@ -179,16 +160,16 @@ ___
 
 ▸ **destroyAllNow**(): *Promise‹void›*
 
-Defined in src/Pool.ts:586
-
-Forcibly destroys all clients regardless of timeout.  Intended to be
-invoked as part of a drain.  Does not prevent the creation of new
+Forcibly destroys all clients regardless of timeout. Intended to be
+invoked as part of a drain. Does not prevent the creation of new
 clients as a result of subsequent calls to acquire.
 
-Note that if factory.min > 0, the pool will destroy all idle resources
+Note that if `factory.min > 0`, the pool will destroy all idle resources
 in the pool, but replace them with newly created resources up to the
-specified factory.min value.  If this is not desired, set factory.min
-to zero before calling destroyAllNow()
+specified `factory.min` value.  If this is not desired, set `factory.min`
+to zero before calling `destroyAllNow()`
+
+**Throws:** [AggregateError](_aggregateerror_.aggregateerror.md)
 
 **Returns:** *Promise‹void›*
 
@@ -198,9 +179,7 @@ ___
 
 ▸ **drain**(): *Promise‹void›*
 
-Defined in src/Pool.ts:541
-
-Disallow any new requests and let the request backlog dissipate.
+Disallow any new acquire requests and let the request backlog dissipate.
 
 **Returns:** *Promise‹void›*
 
@@ -210,9 +189,8 @@ ___
 
 ▸ **release**(`resource`: RawResource): *void*
 
-Defined in src/Pool.ts:451
-
-Return the resource to the pool, in case it is no longer required.
+Return the resource to the pool, add it to the available objects.
+Resource will be available for use by pending or future `acquire()` calls
 
 **Parameters:**
 
