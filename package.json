@@ -36,7 +36,7 @@
     "node": ">= 10.0.0"
   },
   "scripts": {
-    "tsc": "tsc",
+    "build": "tsc",
     "test": "npm run lint && npm run test:raw",
     "lint": "eslint --ext .js,.ts src/**/* test/**/*",
     "pretty": "prettier src/**/*.ts test/**/*.js --write",
