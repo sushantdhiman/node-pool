@@ -1,7 +1,7 @@
 # Sequelize Pool
 
 [![npm](https://img.shields.io/npm/v/sequelize-pool.svg?style=flat-square)](https://www.npmjs.com/package/sequelize-pool)
-[![Travis (.org)](https://img.shields.io/travis/com/sequelize/sequelize-pool.svg?style=flat-square)](https://travis-ci.com/sequelize/sequelize-pool)
+[![Actions Status](https://github.com/sequelize/sequelize-pool/workflows/CI/badge.svg)](https://github.com/sequelize/sequelize-pool/actions)
 
 Resource pool implementation. It can be used to throttle expensive resources.
 
