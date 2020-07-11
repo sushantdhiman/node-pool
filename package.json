@@ -18,6 +18,7 @@
     "lib",
     "types"
   ],
+  "types": "types",
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^14.0.1",
