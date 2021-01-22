@@ -1,11 +1,10 @@
-[sequelize-pool](README.md)
+sequelize-pool
 
 # sequelize-pool
 
-## Index
+## Table of contents
 
-### Modules
+### Classes
 
-* ["AggregateError"](modules/_aggregateerror_.md)
-* ["Pool"](modules/_pool_.md)
-* ["TimeoutError"](modules/_timeouterror_.md)
+- [Pool](classes/pool.md)
+- [TimeoutError](classes/timeouterror.md)
