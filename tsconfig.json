@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "ES6",
+    "target": "es2018",
+    "lib": ["es2018"],
     "allowJs": false,
     "declaration": true,
     "declarationDir": "types",
