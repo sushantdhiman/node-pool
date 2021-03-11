@@ -1,7 +1,7 @@
 {
   "name": "sequelize-pool",
   "description": "Resource pooling for Node.JS",
-  "version": "6.1.0",
+  "version": "7.0.0",
   "author": "Sushant <sushantdhiman@outlook.com>",
   "keywords": [
     "pool",
