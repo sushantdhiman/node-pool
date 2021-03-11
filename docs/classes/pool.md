@@ -5,12 +5,8 @@
 ## Type parameters
 
 Name |
------- |
+:------ |
 `RawResource` |
-
-## Hierarchy
-
-* **Pool**
 
 ## Table of contents
 
@@ -47,13 +43,13 @@ Generate an object pool with a specified `factory`.
 #### Type parameters:
 
 Name |
------- |
+:------ |
 `RawResource` |
 
 #### Parameters:
 
 Name | Type |
------- | ------ |
+:------ | :------ |
 `factory` | *FactoryOptions*<RawResource\> |
 
 **Returns:** [*Pool*](pool.md)<RawResource\>
@@ -62,7 +58,7 @@ Name | Type |
 
 ### available
 
-• **available**(): *number*
+• get **available**(): *number*
 
 Number of unused resources in the pool
 
@@ -72,7 +68,7 @@ ___
 
 ### maxSize
 
-• **maxSize**(): *number*
+• get **maxSize**(): *number*
 
 Maximum number of resources allowed by pool
 
@@ -82,7 +78,7 @@ ___
 
 ### minSize
 
-• **minSize**(): *number*
+• get **minSize**(): *number*
 
 Minimum number of resources allowed by pool
 
@@ -92,7 +88,7 @@ ___
 
 ### name
 
-• **name**(): *string*
+• get **name**(): *string*
 
 factory.name for this pool
 
@@ -102,7 +98,7 @@ ___
 
 ### size
 
-• **size**(): *number*
+• get **size**(): *number*
 
 Number of resources in the pool regardless of
 whether they are free or in use
@@ -113,7 +109,7 @@ ___
 
 ### using
 
-• **using**(): *number*
+• get **using**(): *number*
 
 Number of in use resources
 
@@ -123,7 +119,7 @@ ___
 
 ### waiting
 
-• **waiting**(): *number*
+• get **waiting**(): *number*
 
 Number of callers waiting to acquire a resource
 
@@ -148,7 +144,7 @@ ___
 
 ### destroy
 
-▸ **destroy**(`resource`: RawResource): *Promise*<*void*\>
+▸ **destroy**(`resource`: RawResource): *Promise*<void\>
 
 Removes a resource from pool. The factory's destroy handler will be called with given resource.
 
@@ -157,16 +153,16 @@ This is an alternative to `release()`
 #### Parameters:
 
 Name | Type |
------- | ------ |
+:------ | :------ |
 `resource` | RawResource |
 
-**Returns:** *Promise*<*void*\>
+**Returns:** *Promise*<void\>
 
 ___
 
 ### destroyAllNow
 
-▸ **destroyAllNow**(): *Promise*<*void*\>
+▸ **destroyAllNow**(): *Promise*<void\>
 
 Forcibly destroys all clients regardless of timeout. Intended to be
 invoked as part of a drain. Does not prevent the creation of new
@@ -177,19 +173,19 @@ in the pool, but replace them with newly created resources up to the
 specified `factory.min` value.  If this is not desired, set `factory.min`
 to zero before calling `destroyAllNow()`
 
-**Throws:** {@link AggregateError}
+**Throws:** [AggregateError](aggregateerror.md)
 
-**Returns:** *Promise*<*void*\>
+**Returns:** *Promise*<void\>
 
 ___
 
 ### drain
 
-▸ **drain**(): *Promise*<*void*\>
+▸ **drain**(): *Promise*<void\>
 
 Disallow any new acquire requests and let the request backlog dissipate.
 
-**Returns:** *Promise*<*void*\>
+**Returns:** *Promise*<void\>
 
 ___
 
@@ -203,7 +199,7 @@ Resource will be available for use by pending or future `acquire()` calls
 #### Parameters:
 
 Name | Type |
------- | ------ |
+:------ | :------ |
 `resource` | RawResource |
 
 **Returns:** *void*

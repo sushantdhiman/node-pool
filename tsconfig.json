@@ -16,7 +16,6 @@
   "typedocOptions": {
     "out": "docs",
     "entryPoints": ["src/index.ts"],
-    "exclude": "src/Deferred.ts,src/index.ts",
     "plugin": "typedoc-plugin-markdown",
     "excludePrivate": true,
     "excludeProtected": true,

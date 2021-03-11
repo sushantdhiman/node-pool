@@ -20,8 +20,8 @@ Error which is thrown by pool when acquire request timeouts
 
 - [message](timeouterror.md#message)
 - [name](timeouterror.md#name)
-- [prepareStackTrace](timeouterror.md#preparestacktrace)
 - [stack](timeouterror.md#stack)
+- [prepareStackTrace](timeouterror.md#preparestacktrace)
 - [stackTraceLimit](timeouterror.md#stacktracelimit)
 
 ### Methods
@@ -37,7 +37,7 @@ Error which is thrown by pool when acquire request timeouts
 #### Parameters:
 
 Name | Type |
------- | ------ |
+:------ | :------ |
 `message?` | *string* |
 
 **Returns:** [*TimeoutError*](timeouterror.md)
@@ -56,39 +56,52 @@ ___
 
 ___
 
-### prepareStackTrace
-
-• `Optional` **prepareStackTrace**: (`err`: Error, `stackTraces`: CallSite[]) => *any*
-
-Optional override for formatting stack traces
-
-**`see`** https://github.com/v8/v8/wiki/Stack%20Trace%20API#customizing-stack-traces
-
-___
-
 ### stack
 
 • `Optional` **stack**: *string*
 
 ___
 
+### prepareStackTrace
+
+▪ `Optional` `Static` **prepareStackTrace**: (`err`: Error, `stackTraces`: CallSite[]) => *any*
+
+Optional override for formatting stack traces
+
+**`see`** https://github.com/v8/v8/wiki/Stack%20Trace%20API#customizing-stack-traces
+
+#### Type declaration:
+
+▸ (`err`: Error, `stackTraces`: CallSite[]): *any*
+
+#### Parameters:
+
+Name | Type |
+:------ | :------ |
+`err` | Error |
+`stackTraces` | CallSite[] |
+
+**Returns:** *any*
+
+___
+
 ### stackTraceLimit
 
-• **stackTraceLimit**: *number*
+▪ `Static` **stackTraceLimit**: *number*
 
 ## Methods
 
 ### captureStackTrace
 
-▸ **captureStackTrace**(`targetObject`: *object*, `constructorOpt?`: Function): *void*
+▸ `Static`**captureStackTrace**(`targetObject`: Object, `constructorOpt?`: Function): *void*
 
 Create .stack property on a target object
 
 #### Parameters:
 
 Name | Type |
------- | ------ |
-`targetObject` | *object* |
+:------ | :------ |
+`targetObject` | Object |
 `constructorOpt?` | Function |
 
 **Returns:** *void*

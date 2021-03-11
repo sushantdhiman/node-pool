@@ -6,5 +6,6 @@ sequelize-pool
 
 ### Classes
 
+- [AggregateError](classes/aggregateerror.md)
 - [Pool](classes/pool.md)
 - [TimeoutError](classes/timeouterror.md)
