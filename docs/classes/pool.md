@@ -36,7 +36,7 @@ Name |
 
 ### constructor
 
-\+ **new Pool**<RawResource\>(`factory`: *FactoryOptions*<RawResource\>): [*Pool*](pool.md)<RawResource\>
+\+ **new Pool**<RawResource\>(`factory`: [*FactoryOptions*](../interfaces/factoryoptions.md)<RawResource\>): [*Pool*](pool.md)<RawResource\>
 
 Generate an object pool with a specified `factory`.
 
@@ -50,7 +50,7 @@ Name |
 
 Name | Type |
 :------ | :------ |
-`factory` | *FactoryOptions*<RawResource\> |
+`factory` | [*FactoryOptions*](../interfaces/factoryoptions.md)<RawResource\> |
 
 **Returns:** [*Pool*](pool.md)<RawResource\>
 

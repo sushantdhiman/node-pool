@@ -9,3 +9,7 @@ sequelize-pool
 - [AggregateError](classes/aggregateerror.md)
 - [Pool](classes/pool.md)
 - [TimeoutError](classes/timeouterror.md)
+
+### Interfaces
+
+- [FactoryOptions](interfaces/factoryoptions.md)
