@@ -598,3 +598,29 @@ tap.test('pool does not leak expired resources to pending requests', (t) => {
     pool.release(clientA);
   });
 });
+
+tap.test('acquire resolves after destroying the available resources', (t) => {
+  const resourceFactory = new ResourceFactory();
+
+  const factory = {
+    name: 'test22',
+    create: resourceFactory.create.bind(resourceFactory),
+    destroy: resourceFactory.destroy.bind(resourceFactory),
+    validate: resourceFactory.validate.bind(resourceFactory),
+    max: 1,
+    min: 0,
+    idleTimeoutMillis: 100,
+    acquireTimeoutMillis: 100,
+  };
+
+  const pool = new Pool(factory);
+
+  pool.acquire().then((resource1) => {
+    pool.acquire().then((resource2) => {
+      pool.release(resource2);
+
+      t.end();
+    });
+    pool.destroy(resource1);
+  });
+});

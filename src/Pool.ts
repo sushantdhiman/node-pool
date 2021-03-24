@@ -538,6 +538,14 @@ export class Pool<RawResource> {
       await this._factory.destroy(resource);
     } finally {
       this._ensureMinimum();
+      // Since we are removing the resource, we need to go ahead and
+      // call _dispense() in order to ensure the resource is replaced (if appropriate)
+      // and any pending resource requests are fulfilled.
+      if (!this._draining) {
+        process.nextTick(() => {
+          this._dispense();
+        });
+      }
     }
   }
 
