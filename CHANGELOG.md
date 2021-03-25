@@ -1,5 +1,10 @@
 # Changelog
 
+## 7.x
+
+- breaking: Support only `Node >= 10`
+- fix: `acquire` not resolving after destroying available resources
+
 ## 6.0.0
 
 - change: `destory` (and `destoryAllNow`) are async now, they wait for `factory.destory`
